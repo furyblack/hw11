@@ -19,6 +19,7 @@ export const authRouter = Router({});
 
 // Endpoint для входа пользователя
 authRouter.post('/login', loginzationValidation(), rateLimiterMiddlewave, async (req: RequestWithBody<LoginUserType>, res: Response) => {
+    //TODO вынести в auth service
     // Проверяем учетные данные пользователя
     const user: WithId<UserAccountDBType> | null = await UsersService.checkCredentials(req.body.loginOrEmail, req.body.password);
     if (!user) {
@@ -87,7 +88,7 @@ authRouter.post('/logout', authMiddlewareRefresh, async (req: Request, res: Resp
         res.sendStatus(401); // Если токен отсутствует, возвращаем 401
         return;
     } // удалить сессию -> 204
-    // Декодирование и проверка токена
+    // Дотсаем deviceId из пейлода
     const decoded =  await jwtService.getPayload(refreshToken)
     // const deviceId = decoded.deviceId;
 
