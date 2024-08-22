@@ -13,41 +13,24 @@ import {
 import { loginzationValidation } from "../validators/user-validators";
 import {SessionService} from "../domain/session-service";
 import {inputValidationMiddleware} from "../middlewares/inputValidation/input-validation-middleware";
+import {authService} from "../domain/auth-service";
 
 
 export const authRouter = Router({});
 
 // Endpoint для входа пользователя
 authRouter.post('/login', loginzationValidation(), rateLimiterMiddlewave, async (req: RequestWithBody<LoginUserType>, res: Response) => {
-    //TODO вынести в auth service
+
     // Проверяем учетные данные пользователя
     const user: WithId<UserAccountDBType> | null = await UsersService.checkCredentials(req.body.loginOrEmail, req.body.password);
     if (!user) {
         res.sendStatus(401); // Если пользователь не найден, возвращаем 401 (Unauthorized)
         return;
     }
+     const { accessToken, refreshToken} = await authService.loginUser(user, req.ip!, req.headers['user-agent'] as string)
 
-    // Создаем токены доступа и обновления
-    const token = await jwtService.createAccessToken(user);
-    const refreshToken = await jwtService.createRefreshToken(user);
-
-    // Декодирование и проверка токена
-    const decoded =  await jwtService.getPayload(refreshToken)
-
-    //создаю сессию для пользователей
-    const ip = req.ip!
-    const title = req.headers['user-agent'] as string //user agent   // надо ли as string
-    const lastActiveDate  = new Date(decoded.iat! * 1000);
-    const deviceId = decoded.deviceId;
-
-
-    await SessionService.createSession({ip, title, lastActiveDate, deviceId, userId:user._id.toString()})
-
-
-    // Отправляем refresh токен в куки и access токен в ответе
     res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true });
-    res.status(200).send({ accessToken: token });
-
+    res.status(200).send({ accessToken });
 
 });
 
@@ -60,21 +43,8 @@ authRouter.post('/refresh-token', authMiddlewareRefresh, async (req: Request, re
         res.sendStatus(401); // Если токен отсутствует или пользователь не найден, возвращаем 401
         return;
     }
+    const { newAccessToken, newRefreshToken } = await authService.refreshToken(user, oldRefreshToken, req.deviceId);
 
-    // Создаем новые токены доступа и обновления
-    const newAccessToken = await jwtService.createAccessToken(user);
-    const newRefreshToken = await jwtService.createRefreshTokenWithDeveceID(user, req.deviceId );
-
-
-    // Декодирование и проверка токена
-    const decoded =  await jwtService.getPayload(newRefreshToken)
-    //обновляю дату lastActiveDate в сессии
-    const lastActiveDate  = new Date(decoded.iat! * 1000);
-    const deviceId = decoded.deviceId;
-
-    await SessionService.updateSession({ lastActiveDate, deviceId });
-
-    // Отправляем новый refresh токен в куки и новый access токен в ответе
     res.cookie('refreshToken', newRefreshToken, { httpOnly: true, secure: true });
     res.status(200).send({ accessToken: newAccessToken });
 
