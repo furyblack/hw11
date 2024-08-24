@@ -7,7 +7,8 @@ import {CommentMongoDbType} from "../types/comment/output-comment-type";
 import {requestCountType, SessionType} from "../types/session/sessionType";
 
 //пытаюсь подключить бд
-import mongoose from "mongoose";
+import mongoose, {Schema, Types } from "mongoose";
+
 
 dotenv.config()
 const mongoUri = process.env.MONGO_URL as string // вытащили из енви строку  подключения
@@ -90,14 +91,14 @@ export const RequestCountSchema = new mongoose.Schema({
 })
 export const RequestCountModel = mongoose.model<requestCountType>('requestsCount', RequestCountSchema)
 
+//СХЕМА И МОДЕЛЬ ДЛЯ ЛАЙКОВ И ДИЗЛАЙКОВ НА КОМЕНТЫ
 
-// export const blogCollection: Collection<BlogMongoDbType> = mongoDb.collection<BlogMongoDbType>('blog')
-// export const postCollection: Collection<PostMongoDbType> = mongoDb.collection<PostMongoDbType>('post')
-// export const commentCollection: Collection<CommentMongoDbType> = mongoDb.collection<CommentMongoDbType>('comment')
-// export const usersCollection: Collection<UserAccountDBType> = mongoDb.collection<UserAccountDBType>("user")
-// export const refreshBlackListCollection: Collection<BlacklistedTokenType> = mongoDb.collection<BlacklistedTokenType>("blacklist")
-// export const sessionCollection: Collection<SessionType> = mongoDb.collection<SessionType>("session")
-// export const requestsCountCollection: Collection<requestCountType> = mongoDb.collection<requestCountType>('requests')
+export const CommentsLikesSchema = new mongoose.Schema({
+    commentId: {type: Types.ObjectId, ref:'comments', required:true},
+    userId: {type:Types.ObjectId, ref:'users', required:true},
+    type:{type:String, enum:['None','like','dislike'], required:true}
+})
+export const CommentLikesModel = mongoose.model<>('PostsLikes', CommentsLikesSchema)
 
 
 export async  function connectMongo (){
