@@ -93,12 +93,12 @@ export const RequestCountModel = mongoose.model<requestCountType>('requestsCount
 
 //СХЕМА И МОДЕЛЬ ДЛЯ ЛАЙКОВ И ДИЗЛАЙКОВ НА КОМЕНТЫ
 
-export const CommentsLikesSchema = new mongoose.Schema({
-    commentId: {type: Types.ObjectId, ref:'comments', required:true},
-    userId: {type:Types.ObjectId, ref:'users', required:true},
-    type:{type:String, enum:['None','like','dislike'], required:true}
-})
-export const CommentLikesModel = mongoose.model<>('PostsLikes', CommentsLikesSchema)
+// export const CommentsLikesSchema = new mongoose.Schema({
+//     commentId: {type: Types.ObjectId, ref:'comments', required:true},
+//     userId: {type:Types.ObjectId, ref:'users', required:true},
+//     type:{type:String, enum:['None','like','dislike'], required:true}
+// })
+// export const CommentLikesModel = mongoose.model<>('PostsLikes', CommentsLikesSchema)
 
 
 export async  function connectMongo (){
