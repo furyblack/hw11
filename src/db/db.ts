@@ -64,7 +64,9 @@ export const commentSchema = new mongoose.Schema({
         userId: {type: String, required: true},
         userLogin: {type: String, required: true},
     },
-    createdAt: {type: Date, required: true}
+    createdAt: {type: Date, required: true},
+    likesCount: {type:Date, required:true},
+    dislikesCount:{type:Date, default: 0, required:true}
 })
 export const CommentModel = mongoose.model<CommentMongoDbType>('comments', commentSchema)
 
@@ -89,23 +91,22 @@ export const RequestCountModel = mongoose.model<requestCountType>('requestsCount
 
 //СХЕМА И МОДЕЛЬ ДЛЯ ЛАЙКОВ И ДИЗЛАЙКОВ НА КОМЕНТЫ
 
-// export const CommentsLikesSchema = new mongoose.Schema({
-//     commentId: {type: Types.ObjectId, ref:'comments', required:true},
-//     userId: {type:Types.ObjectId, ref:'users', required:true},
-//     type:{type:String, enum:['None','like','dislike'], required:true}
-// })
-// export const CommentLikesModel = mongoose.model<>('PostsLikes', CommentsLikesSchema)
+export const likeSchema  = new mongoose.Schema({
+    commentId: {type: mongoose.Schema.Types.ObjectId, ref:'comments', required:true},
+    userId: {type:String, required:true},
+    status:{type:String, enum: ['Like', 'Dislike'], required:true},
+    createdAt:{type:Date, required:true}
+})
+export const LikeModel  = mongoose.model('PostsLikes', likeSchema )
 
 
 export async  function connectMongo (){
     try{
         await mongoose.connect(mongoUri, {dbName})
         console.log('hello')
-        //await client.connect(mongoUri)
         return true
     }catch (e) {
         console.log(e)
-        // await client.close()
         await mongoose.disconnect()
         return false
     }

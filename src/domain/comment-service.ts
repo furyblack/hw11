@@ -34,10 +34,11 @@ export class CommentService{
                 userId: userId,
                 userLogin: userLogin,
             },
-            createdAt: new Date()
+            createdAt: new Date(),
+            likesCount: 0,
+            dislikesCount: 0
         }
         return   await CommentRepository.createComment(newComment)
 
     }
-
 }

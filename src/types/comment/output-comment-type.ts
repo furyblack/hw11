@@ -16,6 +16,8 @@ export type CommentMongoDbType =  {
         "userId": string,
         "userLogin": string
     }
-    "createdAt": Date
+    "createdAt": Date,
+    "likesCount": number,
+    "dislikesCount": number
 }
 export type CommentMongoDbTypeWithId = CommentMongoDbType & { _id: Object };

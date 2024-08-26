@@ -5,9 +5,6 @@ import {commentForPostValidation} from "../validators/post-validators";
 import {UpdateCommentType} from "../types/comment/input-comment-type";
 import {CommentRepository} from "../repositories/comment-repository";
 
-
-
-
 export const commentRouter= Router({})
 
 
@@ -33,12 +30,8 @@ commentRouter.put('/:id', authMiddlewareBearer, commentForPostValidation(), asyn
         return res.sendStatus(403)
     }
     await CommentRepository.updateComment(commentId, commentUpdateParams)
-    //if(isUpdated){
     if(!foundComment) return res.sendStatus(404)
         return res.sendStatus(204)
-    // }else{
-    //     return  res.sendStatus(404)
-    // }
 })
 
 commentRouter.delete('/:id',authMiddlewareBearer, async (req:Request,res:Response) =>{
@@ -56,13 +49,5 @@ commentRouter.delete('/:id',authMiddlewareBearer, async (req:Request,res:Respons
     if(!foundComment) return res.sendStatus(404)
      return res.sendStatus(204)
 
-
-
-    // const isDeleted = await CommentRepository.deleteComment(req.params.id)
-    // if(!isDeleted){
-    //     res.sendStatus(404)
-    // }else {
-    //     res.sendStatus(204)
-    // }
 })
 
