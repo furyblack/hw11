@@ -1,21 +1,17 @@
 import * as dotenv from "dotenv";
 import { BlogMongoDbType} from "../types/blogs/output";
 import { PostMongoDbType} from "../types/posts/output";
-import {MongoClient} from "mongodb";
 import {UserAccountDBType,} from "../types/users/inputUsersType";
 import {CommentMongoDbType} from "../types/comment/output-comment-type";
 import {requestCountType, SessionType} from "../types/session/sessionType";
 
 //пытаюсь подключить бд
-import mongoose, {Schema, Types } from "mongoose";
-
+import mongoose from "mongoose";
 
 dotenv.config()
 const mongoUri = process.env.MONGO_URL as string // вытащили из енви строку  подключения
 
-export const client = new MongoClient(mongoUri);
 const dbName =  process.env.DB_NAME
-// const mongoDb = client.db(dbName)
 
 
 //СХЕМА И МОДЕЛЬ БЛОГОВ
