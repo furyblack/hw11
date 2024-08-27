@@ -1,6 +1,7 @@
 import {CommentMongoDbType, CommentMongoDbTypeWithId, CommentOutputType} from "../types/comment/output-comment-type";
 import {CommentRepository} from "../repositories/comment-repository";
 import {PostRepository} from "../repositories/post-repository";
+import {LikeModel} from "../db/db";
 
 export class CommentMapper{
     static toDto(comment:CommentMongoDbTypeWithId):CommentOutputType{
@@ -40,5 +41,9 @@ export class CommentService{
         }
         return   await CommentRepository.createComment(newComment)
 
+    }
+
+    static async updateLikeStatus(commentId: string, userId: string, likeStatus: 'None'|'Like'|'Dislike'):Promise<void>{
+        const existingLike = await LikeModel.findOne
     }
 }
