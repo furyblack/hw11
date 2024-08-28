@@ -36,8 +36,12 @@ export class CommentService{
                 userLogin: userLogin,
             },
             createdAt: new Date(),
-            likesCount: 0,
-            dislikesCount: 0
+            likesInfo:{
+                likesCount: 0,
+                dislikesCount: 0,
+                myStatus:'None'
+            }
+
         }
         return   await CommentRepository.createComment(newComment)
 
