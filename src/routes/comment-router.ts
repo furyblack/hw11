@@ -4,6 +4,8 @@ import {authMiddlewareBearer} from "../middlewares/auth/auth-middleware";
 import {commentForPostValidation} from "../validators/post-validators";
 import {UpdateCommentType} from "../types/comment/input-comment-type";
 import {CommentRepository} from "../repositories/comment-repository";
+import {CommentModel} from "../db/db";
+import {CommentService} from "../domain/comment-service";
 
 export const commentRouter= Router({})
 
@@ -48,6 +50,27 @@ commentRouter.delete('/:id',authMiddlewareBearer, async (req:Request,res:Respons
     await CommentRepository.deleteComment(commentId)
     if(!foundComment) return res.sendStatus(404)
      return res.sendStatus(204)
-
 })
+
+commentRouter.put('/:id/like-status', async (req:Request,res:Response)=>{
+    const {commentId} = req.params
+    const {userId, likeStatus} = req.body
+
+    if(!['None', 'Like','Dislike'].includes(likeStatus)){
+        return res.status(400).send({errorsMessages:[{message:'Invalid like status', field:'likeStatus'}]})
+    }
+
+    try {
+        const commentsExists = await CommentModel.findById(commentId)
+        if(!commentsExists){
+            return res.status(404).send({errorMessages:[{message:'Comment not found', field:'commentId'}]})
+        }
+
+        await CommentService.updateLikeStatus(commentId, userId,likeStatus)
+        return res.sendStatus(204)
+    }catch (error){
+        return res.status(500).send({error:'Something went wrong'})
+    }
+})
+
 

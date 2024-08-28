@@ -1,7 +1,7 @@
 import {CommentMongoDbType, CommentMongoDbTypeWithId, CommentOutputType} from "../types/comment/output-comment-type";
 import {CommentRepository} from "../repositories/comment-repository";
 import {PostRepository} from "../repositories/post-repository";
-import {LikeModel} from "../db/db";
+import {CommentModel, LikeModel} from "../db/db";
 
 export class CommentMapper{
     static toDto(comment:CommentMongoDbTypeWithId):CommentOutputType{
@@ -44,6 +44,31 @@ export class CommentService{
     }
 
     static async updateLikeStatus(commentId: string, userId: string, likeStatus: 'None'|'Like'|'Dislike'):Promise<void>{
-        const existingLike = await LikeModel.findOne
+        const existingLike = await LikeModel.findOne({commentId, userId})
+
+        if(likeStatus=== 'None'){
+            //удаляем лайк или дизлайк если статус None
+            if(existingLike){
+                await existingLike.deleteOne()
+                await updateCommentLikeCounts(commentId)
+            }
+        }else{
+            //обновляем или доабвляем лайк или дизлайк
+            if(existingLike){
+                if(existingLike.status !== likeStatus){
+                    await existingLike.updateOne({status: likeStatus})
+                }
+            }else {
+                await LikeModel.create({commentId,userId, status:likeStatus, createdAt:new Date()})
+
+            }
+            await updateCommentLikeCounts(commentId)
+        }
     }
+}
+const updateCommentLikeCounts = async (commentId:string)=>{
+    const likesCount  = await LikeModel.countDocuments({commentId, status:'Like'})
+    const dislikesCount  = await LikeModel.countDocuments({commentId, status:'Dislike'})
+
+    await CommentModel.findByIdAndUpdate(commentId,{likesCount,dislikesCount})
 }
