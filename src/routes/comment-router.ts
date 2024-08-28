@@ -52,7 +52,7 @@ commentRouter.delete('/:id',authMiddlewareBearer, async (req:Request,res:Respons
      return res.sendStatus(204)
 })
 
-commentRouter.put('/:id/like-status', async (req:Request,res:Response)=>{
+commentRouter.put('/:id/like-status', authMiddlewareBearer, async (req:Request,res:Response)=>{
     const {commentId} = req.params
     const {userId, likeStatus} = req.body
 

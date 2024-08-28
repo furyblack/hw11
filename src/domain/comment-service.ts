@@ -44,25 +44,26 @@ export class CommentService{
     }
 
     static async updateLikeStatus(commentId: string, userId: string, likeStatus: 'None'|'Like'|'Dislike'):Promise<void>{
+        //находим существующий лайк для этого комента и пользователя
         const existingLike = await LikeModel.findOne({commentId, userId})
 
         if(likeStatus=== 'None'){
             //удаляем лайк или дизлайк если статус None
-            if(existingLike){
-                await existingLike.deleteOne()
-                await updateCommentLikeCounts(commentId)
+            if(existingLike){   //если лайк уже был
+                await existingLike.deleteOne() // удаляем лайк из бд
+                await updateCommentLikeCounts(commentId) // обновляем количество лайков дизлайков для комента
             }
         }else{
-            //обновляем или доабвляем лайк или дизлайк
-            if(existingLike){
-                if(existingLike.status !== likeStatus){
-                    await existingLike.updateOne({status: likeStatus})
+            //если статус лайка не NOne нужно добавить или обновить лайк\дизлайк
+            if(existingLike){   //если лайк был
+                if(existingLike.status !== likeStatus){ //если статус лайка изменился
+                    await existingLike.updateOne({status: likeStatus}) //обновляем статус в бд
                 }
-            }else {
+            }else { //если лайка еще не было
                 await LikeModel.create({commentId,userId, status:likeStatus, createdAt:new Date()})
 
             }
-            await updateCommentLikeCounts(commentId)
+            await updateCommentLikeCounts(commentId) //обновляем количество лайков дизлайков
         }
     }
 }
