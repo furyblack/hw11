@@ -3,8 +3,8 @@ import {CommentModel, PostModel} from "../db/db";
 import {PostMapper} from "../domain/posts-service";
 import {PaginationOutputType} from "../types/blogs/output";
 import {ObjectId, SortDirection} from "mongodb";
-import {CommentMapper} from "../domain/comment-service";
 import {CommentOutputType} from "../types/comment/output-comment-type";
+import {CommentMapper} from "./comment-repository";
 
 
 export class QueryPostRepository {

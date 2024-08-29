@@ -1,3 +1,5 @@
+import {LikeStatusEnum} from "../../db/db";
+
 export type CommentOutputType = {
     "id": string,
     "content": string,
@@ -6,6 +8,11 @@ export type CommentOutputType = {
         "userLogin": string
     },
     "createdAt": string
+    likesInfo: {
+        likesCount: number,
+        dislikesCount: number,
+        myStatus:LikeStatusEnum
+    }
 }
 
 export type CommentMongoDbType =  {
@@ -19,8 +26,7 @@ export type CommentMongoDbType =  {
     "createdAt": Date,
     likesInfo: {
         likesCount: number,
-        dislikesCount: number,
-        myStatus: 'Like' | 'Dislike' | 'None'
+        dislikesCount: number
     }
 
 }

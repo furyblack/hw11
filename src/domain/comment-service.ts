@@ -1,18 +1,8 @@
-import {CommentMongoDbType, CommentMongoDbTypeWithId, CommentOutputType} from "../types/comment/output-comment-type";
+import {CommentMongoDbType} from "../types/comment/output-comment-type";
 import {CommentRepository} from "../repositories/comment-repository";
 import {PostRepository} from "../repositories/post-repository";
-import {CommentModel, LikeModel} from "../db/db";
+import {CommentModel, LikeModel, LikeStatusEnum} from "../db/db";
 
-export class CommentMapper{
-    static toDto(comment:CommentMongoDbTypeWithId):CommentOutputType{
-        return {
-            id: comment._id.toString(),
-            content: comment.content,
-            commentatorInfo:comment.commentatorInfo,
-            createdAt: comment.createdAt.toISOString()
-        }
-    }
-}
 
 type CreateCommentServiceType ={
     postId:string,
@@ -39,7 +29,6 @@ export class CommentService{
             likesInfo:{
                 likesCount: 0,
                 dislikesCount: 0,
-                myStatus:'None'
             }
 
         }
@@ -47,11 +36,11 @@ export class CommentService{
 
     }
 
-    static async updateLikeStatus(commentId: string, userId: string, likeStatus: 'None'|'Like'|'Dislike'):Promise<void>{
+    static async updateLikeStatus(commentId: string, userId: string, likeStatus: LikeStatusEnum):Promise<void>{
         //находим существующий лайк для этого комента и пользователя
         const existingLike = await LikeModel.findOne({commentId, userId})
 
-        if(likeStatus=== 'None'){
+        if(likeStatus=== LikeStatusEnum.NONE){
             //удаляем лайк или дизлайк если статус None
             if(existingLike){   //если лайк уже был
                 await existingLike.deleteOne() // удаляем лайк из бд
@@ -72,8 +61,8 @@ export class CommentService{
     }
 }
 const updateCommentLikeCounts = async (commentId:string)=>{
-    const likesCount  = await LikeModel.countDocuments({commentId, status:'Like'})
-    const dislikesCount  = await LikeModel.countDocuments({commentId, status:'Dislike'})
+    const likesCount  = await LikeModel.countDocuments({commentId, status:LikeStatusEnum.LIKE})
+    const dislikesCount  = await LikeModel.countDocuments({commentId, status:LikeStatusEnum.DISLIKE})
 
     await CommentModel.findByIdAndUpdate(commentId,{likesCount,dislikesCount})
 }

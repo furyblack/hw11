@@ -1,4 +1,4 @@
-import {Request, Response, Router} from "express";
+import {NextFunction, Request, Response, Router} from "express";
 import {QueryCommentRepository} from "../repositories/query-comment-repository";
 import {authMiddlewareBearer} from "../middlewares/auth/auth-middleware";
 import {commentForPostValidation} from "../validators/post-validators";
@@ -6,11 +6,36 @@ import {UpdateCommentType} from "../types/comment/input-comment-type";
 import {CommentRepository} from "../repositories/comment-repository";
 import {CommentModel} from "../db/db";
 import {CommentService} from "../domain/comment-service";
+import jwt from "jsonwebtoken";
+import {jwtService} from "../application/jwt-service";
+import {UsersRepository} from "../repositories/users-repository";
 
 export const commentRouter= Router({})
 
 
-commentRouter.get('/:id', async (req: Request, res: Response)=>{
+
+const extractUserIdFromToken = async  (req: Request, res: Response, next: NextFunction) => {
+    if (!req.headers.authorization) {
+        next()
+        return;
+    }
+    // Извлекаем токен из заголовка
+    const token = req.headers.authorization.split(' ')[1];
+    // Получаем ID пользователя по токену
+    const userId = await jwtService.getUserIdByToken(token);
+    // Ищем пользователя в базе данных
+    const user = await UsersRepository.findUserById(userId);
+    if (user) {
+        req.userDto = user; // Добавляем пользователя в объект запроса
+        next(); // Передаем управление следующему middleware
+        return;
+    }
+     return next()
+};
+
+
+
+commentRouter.get('/:id', extractUserIdFromToken, async (req: Request, res: Response)=>{
 const commentId = await QueryCommentRepository.getById(req.params.id)
     if(commentId){
         res.status(200).send(commentId)

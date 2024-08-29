@@ -65,8 +65,10 @@ export const commentSchema = new mongoose.Schema({
         userLogin: {type: String, required: true},
     },
     createdAt: {type: Date, required: true},
-    likesCount: {type:Date, required:true},
-    dislikesCount:{type:Date, default: 0, required:true}
+    likesInfo:{
+        likesCount: {type: String, required: true},
+        dislikesCount: {type: String, required: true},
+    }
 })
 export const CommentModel = mongoose.model<CommentMongoDbType>('comments', commentSchema)
 
@@ -91,13 +93,24 @@ export const RequestCountModel = mongoose.model<requestCountType>('requestsCount
 
 //СХЕМА И МОДЕЛЬ ДЛЯ ЛАЙКОВ И ДИЗЛАЙКОВ НА КОМЕНТЫ
 
+
+export enum LikeStatusEnum {
+    LIKE='Like', DISLIKE='Dislike', NONE='None'
+}
 export const likeSchema  = new mongoose.Schema({
     commentId: {type: mongoose.Schema.Types.ObjectId, ref:'comments', required:true},
     userId: {type:String, required:true},
-    status:{type:String, enum: ['Like', 'Dislike'], required:true},
+    status:{type:String, enum: LikeStatusEnum, required:true},
     createdAt:{type:Date, required:true}
 })
-export const LikeModel  = mongoose.model('PostsLikes', likeSchema )
+
+export type likeType = {
+    commentId: mongoose.Schema.Types.ObjectId,
+    userId: String,
+    status:LikeStatusEnum,
+    createdAt:Date
+}
+export const LikeModel  = mongoose.model<likeType>('CommentsLikes', likeSchema )
 
 
 export async  function connectMongo (){

@@ -1,16 +1,21 @@
 import {CommentMongoDbType, CommentOutputType} from "../types/comment/output-comment-type";
 import {ObjectId, WithId} from "mongodb";
-import {CommentModel} from "../db/db";
+import {CommentModel, LikeStatusEnum} from "../db/db";
 import {UpdateCommentType} from "../types/comment/input-comment-type";
 import {QueryCommentRepository} from "./query-comment-repository";
 
 export class CommentMapper {
-    static toDto(comment: WithId<CommentMongoDbType>): CommentOutputType {
+    static toDto(comment: WithId<CommentMongoDbType>, likeStatus:LikeStatusEnum = LikeStatusEnum.NONE): CommentOutputType {
         return {
             id: comment._id.toString(),
-            createdAt: comment.createdAt.toISOString(),
             content: comment.content,
-            commentatorInfo: comment.commentatorInfo
+            commentatorInfo:comment.commentatorInfo,
+            createdAt: comment.createdAt.toISOString(),
+            likesInfo:{
+                likesCount: comment.likesInfo.likesCount,
+                dislikesCount: comment.likesInfo.dislikesCount,
+                myStatus: likeStatus
+            }
         }
     }
 }
