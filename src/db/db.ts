@@ -66,8 +66,8 @@ export const commentSchema = new mongoose.Schema({
     },
     createdAt: {type: Date, required: true},
     likesInfo:{
-        likesCount: {type: String, required: true},
-        dislikesCount: {type: String, required: true},
+        likesCount: {type: Number, required: true},
+        dislikesCount: {type: Number, required: true},
     }
 })
 export const CommentModel = mongoose.model<CommentMongoDbType>('comments', commentSchema)
@@ -92,7 +92,6 @@ export const RequestCountSchema = new mongoose.Schema({
 export const RequestCountModel = mongoose.model<requestCountType>('requestsCount', RequestCountSchema)
 
 //СХЕМА И МОДЕЛЬ ДЛЯ ЛАЙКОВ И ДИЗЛАЙКОВ НА КОМЕНТЫ
-
 
 export enum LikeStatusEnum {
     LIKE='Like', DISLIKE='Dislike', NONE='None'

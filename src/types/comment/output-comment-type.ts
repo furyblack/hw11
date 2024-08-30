@@ -30,4 +30,3 @@ export type CommentMongoDbType =  {
     }
 
 }
-export type CommentMongoDbTypeWithId = CommentMongoDbType & { _id: Object };

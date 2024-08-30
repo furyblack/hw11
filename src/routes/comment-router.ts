@@ -6,7 +6,6 @@ import {UpdateCommentType} from "../types/comment/input-comment-type";
 import {CommentRepository} from "../repositories/comment-repository";
 import {CommentModel} from "../db/db";
 import {CommentService} from "../domain/comment-service";
-import jwt from "jsonwebtoken";
 import {jwtService} from "../application/jwt-service";
 import {UsersRepository} from "../repositories/users-repository";
 
@@ -78,7 +77,7 @@ commentRouter.delete('/:id',authMiddlewareBearer, async (req:Request,res:Respons
 })
 
 commentRouter.put('/:id/like-status', authMiddlewareBearer, async (req:Request,res:Response)=>{
-    const {commentId} = req.params
+    const id = req.params.id
     const {userId, likeStatus} = req.body
 
     if(!['None', 'Like','Dislike'].includes(likeStatus)){
@@ -86,15 +85,16 @@ commentRouter.put('/:id/like-status', authMiddlewareBearer, async (req:Request,r
     }
 
     try {
-        const commentsExists = await CommentModel.findById(commentId)
+        const commentsExists = await CommentModel.findById(id)
         if(!commentsExists){
             return res.status(404).send({errorMessages:[{message:'Comment not found', field:'commentId'}]})
         }
 
-        await CommentService.updateLikeStatus(commentId, userId,likeStatus)
+        await CommentService.updateLikeStatus(id, userId, likeStatus)
         return res.sendStatus(204)
     }catch (error){
-        return res.status(500).send({error:'Something went wrong'})
+        console.error('Error updating like status:', error);
+        return res.status(500).send({error:'Something went wrong'});
     }
 })
 

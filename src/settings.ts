@@ -1,7 +1,7 @@
 import express, {Request, Response} from "express";
 import {
-    BlogModel, PostModel, RequestCountModel,
-     SessionModel, UserModel,
+    BlogModel, CommentModel, LikeModel, PostModel, RequestCountModel,
+    SessionModel, UserModel,
 } from "./db/db";
 import {postRoute} from "./routes/post-route";
 import {blogRoute} from "./routes/blog-route";
@@ -30,5 +30,7 @@ app.delete('/testing/all-data', async (req:Request, res: Response)=>{
     await UserModel.deleteMany({})
     await SessionModel.deleteMany({})
     await RequestCountModel.deleteMany({})
+    await CommentModel.deleteMany({})
+    await LikeModel.deleteMany({})
     res.sendStatus(204)
 })
