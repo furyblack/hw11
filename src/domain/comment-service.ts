@@ -40,11 +40,11 @@ export class CommentService{
         //находим существующий лайк для этого комента и пользователя
         const existingLike = await LikeModel.findOne({commentId, userId})
 
-        if(likeStatus=== LikeStatusEnum.NONE){
+        if(likeStatus === LikeStatusEnum.NONE){
             //удаляем лайк или дизлайк если статус None
             if(existingLike){   //если лайк уже был
                 await existingLike.deleteOne() // удаляем лайк из бд
-                await updateCommentLikeCounts(commentId) // обновляем количество лайков дизлайков для комента
+
             }
         }else{
             //если статус лайка не NOne нужно добавить или обновить лайк\дизлайк
@@ -64,5 +64,10 @@ const updateCommentLikeCounts = async (commentId:string)=>{
     const likesCount  = await LikeModel.countDocuments({commentId, status:LikeStatusEnum.LIKE})
     const dislikesCount  = await LikeModel.countDocuments({commentId, status:LikeStatusEnum.DISLIKE})
 
-    await CommentModel.findByIdAndUpdate(commentId,{likesCount,dislikesCount})
+        // обновляем поля likesInfo
+    await CommentModel.findByIdAndUpdate(commentId,{
+        'likesInfo.likesCount':likesCount,
+        'likesInfo.dislikesCount':dislikesCount,
+
+    })
 }
