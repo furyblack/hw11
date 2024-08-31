@@ -33,32 +33,29 @@ export class CommentService{
 
         }
         return   await CommentRepository.createComment(newComment)
-
     }
 
-    static async updateLikeStatus(commentId: string, userId: string, likeStatus: LikeStatusEnum):Promise<void>{
-        //находим существующий лайк для этого комента и пользователя
-        const existingLike = await LikeModel.findOne({commentId, userId})
 
-        if(likeStatus === LikeStatusEnum.NONE){
-            //удаляем лайк или дизлайк если статус None
-            if(existingLike){   //если лайк уже был
-                await existingLike.deleteOne() // удаляем лайк из бд
+    static async updateLikeStatus(commentId: string, userId: string, likeStatus: LikeStatusEnum): Promise<void> {
+        const existingLike = await LikeModel.findOne({ commentId, userId });
 
+        if (likeStatus === LikeStatusEnum.NONE) {
+            if (existingLike) {
+                await existingLike.deleteOne();
             }
-        }else{
-            //если статус лайка не NOne нужно добавить или обновить лайк\дизлайк
-            if(existingLike){   //если лайк был
-                if(existingLike.status !== likeStatus){ //если статус лайка изменился
-                    await existingLike.updateOne({status: likeStatus}) //обновляем статус в бд
+        } else {
+            if (existingLike) {
+                if (existingLike.status !== likeStatus) {
+                    await existingLike.updateOne({ status: likeStatus });
                 }
-            }else { //если лайка еще не было
-                await LikeModel.create({commentId,userId, status:likeStatus, createdAt:new Date()})
-
+            } else {
+                await LikeModel.create({ commentId, userId, status: likeStatus, createdAt: new Date() });
             }
-            await updateCommentLikeCounts(commentId) //обновляем количество лайков дизлайков
         }
+
+        await updateCommentLikeCounts(commentId);
     }
+
 }
 const updateCommentLikeCounts = async (commentId:string)=>{
     const likesCount  = await LikeModel.countDocuments({commentId, status:LikeStatusEnum.LIKE})

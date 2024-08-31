@@ -4,15 +4,14 @@ import {authMiddlewareBearer} from "../middlewares/auth/auth-middleware";
 import {commentForPostValidation} from "../validators/post-validators";
 import {UpdateCommentType} from "../types/comment/input-comment-type";
 import {CommentRepository} from "../repositories/comment-repository";
-import {CommentModel} from "../db/db";
+import {CommentModel, LikeModel} from "../db/db";
 import {CommentService} from "../domain/comment-service";
 import {jwtService} from "../application/jwt-service";
 import {UsersRepository} from "../repositories/users-repository";
 
 export const commentRouter= Router({})
 
-
-
+//миддл вар для получения комента всем пользователям( и даже не авторизованным)
 const extractUserIdFromToken = async  (req: Request, res: Response, next: NextFunction) => {
     if (!req.headers.authorization) {
         next()
@@ -32,16 +31,42 @@ const extractUserIdFromToken = async  (req: Request, res: Response, next: NextFu
      return next()
 };
 
+commentRouter.get('/:id', extractUserIdFromToken, async (req: Request, res: Response) => {
+    const commentId = req.params.id;
+    const userId = req.userDto ? req.userDto._id.toString() : null;
 
+    const comment = await QueryCommentRepository.getById(commentId);
 
-commentRouter.get('/:id', extractUserIdFromToken, async (req: Request, res: Response)=>{
-const commentId = await QueryCommentRepository.getById(req.params.id)
-    if(commentId){
-        res.status(200).send(commentId)
-    }else{
-        res.sendStatus(404)
+    if (!comment) {
+        return res.sendStatus(404);
     }
-})
+
+    let myStatus = 'None';
+
+    if (userId) {
+        const userLike = await LikeModel.findOne({ commentId, userId });
+        if (userLike) {
+            myStatus = userLike.status;
+        }
+    }
+
+    const responseComment = {
+        id: comment.id,
+        content: comment.content,
+        commentatorInfo: comment.commentatorInfo,
+        createdAt: comment.createdAt,
+        likesInfo: {
+            likesCount: comment.likesInfo.likesCount,
+            dislikesCount: comment.likesInfo.dislikesCount,
+            myStatus: myStatus,
+        }
+    };
+
+    res.status(200).send(responseComment);
+    return
+});
+
+
 
 commentRouter.put('/:id', authMiddlewareBearer, commentForPostValidation(), async (req: Request, res: Response) =>{
     const commentUpdateParams: UpdateCommentType={
