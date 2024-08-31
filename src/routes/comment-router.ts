@@ -78,7 +78,7 @@ commentRouter.delete('/:id',authMiddlewareBearer, async (req:Request,res:Respons
 
 commentRouter.put('/:id/like-status', authMiddlewareBearer, async (req:Request,res:Response)=>{
     const id = req.params.id
-    const  likeStatus = req.body
+    const  {likeStatus} = req.body
     const userId = req.userDto._id.toString()
 
     if(!['None', 'Like','Dislike'].includes(likeStatus)){
