@@ -65,6 +65,7 @@ blogRoute.post('/', authMiddleware, blogValidation(), async (req: RequestWithBod
     const newBlog = await BlogsService.createBlog({name, description, websiteUrl})
 
     res.status(201).send(newBlog)
+    return
 })
 
 // Роут для создания нового поста для конкретного блога

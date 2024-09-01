@@ -54,12 +54,13 @@ postRoute.get('/:postId/comments', async (req:RequestWithQueryAndParams<{ postId
         const comments = await QueryPostRepository.getAllCommentsForPost(postId, paginationData)
 
         res.status(200).send(comments)
-
+        return
 
     }
     catch(error){
         console.error("Error fetching comments for post:", error)
         res.status(500).json({message: 'Internal server error'})
+        return
     }
 })
 
