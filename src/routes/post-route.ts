@@ -13,6 +13,7 @@ import {CreateNewCommentType} from "../types/comment/input-comment-type";
 import {CommentService} from "../domain/comment-service";
 import {QueryCommentRepository} from "../repositories/query-comment-repository";
 import {ObjectId} from "mongodb";
+import {extractUserIdFromToken} from "../middlewares/comments/comments-middleware";
 
 
 export const postRoute = Router({})
@@ -32,9 +33,10 @@ postRoute.get('/:id', async (req:Request, res: Response)=>{
     }
 })
 
-postRoute.get('/:postId/comments', async (req:RequestWithQueryAndParams<{ postId:string }, postQuerySortData>, res:Response)=> {
+postRoute.get('/:postId/comments', extractUserIdFromToken, async (req:RequestWithQueryAndParams<{ postId:string }, postQuerySortData>, res:Response)=> {
     const postId = req.params.postId
     const paginationData = paginator(req.query)
+    const userId = req.userDto ? req.userDto._id.toString() : null;
     if(!ObjectId.isValid(postId)){
         res.sendStatus(404)
         return
@@ -51,7 +53,7 @@ postRoute.get('/:postId/comments', async (req:RequestWithQueryAndParams<{ postId
         return
     }
     try {
-        const comments = await QueryPostRepository.getAllCommentsForPost(postId, paginationData)
+        const comments = await QueryPostRepository.getAllCommentsForPost(postId, paginationData, userId)
 
         res.status(200).send(comments)
         return
