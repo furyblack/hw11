@@ -26,7 +26,7 @@ export class PostRepository{
             return null
         }
         const newPost:PostMongoDbType ={
-            _id: new ObjectId(),//crypto.randomUUID(),  //new ObjectId()//crypto.randomUUID(),
+            _id: new ObjectId(),
             title: postParams.title,
             shortDescription: postParams.shortDescription,
             content: postParams.content,

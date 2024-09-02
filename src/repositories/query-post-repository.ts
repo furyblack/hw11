@@ -37,7 +37,7 @@ export class QueryPostRepository {
         const { pageSize, pageNumber, sortBy, sortDirection } = sortData;
         const search = { postId: postId };
 
-        // Получаем все комментарии к посту с сортировкой и пагинацией
+        // Получаем все комменты к посту с сортировкой и пагинацией
         const comments = await CommentModel
             .find(search)
             .sort({ [sortBy]: sortDirection as SortDirection })
@@ -45,10 +45,10 @@ export class QueryPostRepository {
             .skip((pageNumber - 1) * pageSize)
             .lean();
 
-        // Подсчёт общего количества комментариев
+        // Подсчёт общего количества комментов
         const totalCount = await CommentModel.countDocuments(search);
 
-        // Если userId не передан, возвращаем комментарии без `myStatus`
+        // Если userId не передан, возвращаем комменты без myStatus
         if (!userId) {
             return {
                 pagesCount: Math.ceil(totalCount / pageSize),
@@ -59,32 +59,32 @@ export class QueryPostRepository {
                     id: c._id.toString(),
                     content: c.content,
                     commentatorInfo: c.commentatorInfo,
-                    createdAt: c.createdAt.toISOString(), // Преобразуем Date в строку
+                    createdAt: c.createdAt.toISOString(), // Преобразование в строку
                     likesInfo: {
                         likesCount: c.likesInfo.likesCount,
                         dislikesCount: c.likesInfo.dislikesCount,
-                        myStatus: LikeStatusEnum.NONE, // Используем LikeStatusEnum
+                        myStatus: LikeStatusEnum.NONE // По умолчанию
                     }
                 }))
             };
         }
 
-        // Получаем статус реакции пользователя для каждого комментария
-        const userLikes = await LikeModel.find({ commentId: { $in: comments.map(c => c._id) }, userId });
+        // Получаем статус реакции пользователя для каждого коммента
+        const userLikes = await LikeModel.find({ commentId: { $in: comments.map(c => c._id.toString()) }, userId });
         const userLikesMap = new Map(userLikes.map(like => [like.commentId.toString(), like.status]));
 
-        // Формируем ответ с учетом `myStatus`
+        // Формируем ответ с учётом myStatus
         const responseComments = comments.map(c => {
-            const myStatus = userLikesMap.get(c._id.toString()) || LikeStatusEnum.NONE; // Используем LikeStatusEnum
+            const myStatus = userLikesMap.get(c._id.toString()) || LikeStatusEnum.NONE; // Значение из LikeStatusEnum
             return {
                 id: c._id.toString(),
                 content: c.content,
                 commentatorInfo: c.commentatorInfo,
-                createdAt: c.createdAt.toISOString(), // Преобразуем Date в строку
+                createdAt: c.createdAt.toISOString(), // Преобразование в строку
                 likesInfo: {
                     likesCount: c.likesInfo.likesCount,
                     dislikesCount: c.likesInfo.dislikesCount,
-                    myStatus: myStatus as LikeStatusEnum, // Приведение типа
+                    myStatus: myStatus
                 }
             };
         });
@@ -97,6 +97,7 @@ export class QueryPostRepository {
             items: responseComments
         };
     }
+
 
 
 
