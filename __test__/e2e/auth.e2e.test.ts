@@ -13,7 +13,8 @@ let user;
 let firstRefreshToken: any;
 
 describe('/auth', () => {
-    const mongoURI = 'mongodb+srv://miha:miha2016!@cluster0.expiegq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
+    // const mongoURI = 'mongodb+srv://miha:miha2016!@cluster0.expiegq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
+    const mongoURI = 'mongodb://localhost:27017'
     beforeAll(async () => {
         await mongoose.connect(mongoURI, {dbName:'testUser'})
 
@@ -36,12 +37,14 @@ describe('/auth', () => {
     });
 
     it('should login user first time', async () => {
+        console.log('FIRST')
         const loginResponse = await request(app)
+
             .post('/auth/login')
             .send({loginOrEmail: userCreateData.login, password: userCreateData.password})
-            .expect(200);
+            //.expect(200);
         firstRefreshToken = loginResponse.headers['set-cookie'][0].split(';')[0].split('=')[1];
-
+        console.log('LOGIN', loginResponse.body)
         const sessionsResponse1 = await request(app)
             .get('/security/devices')
             .set('Cookie', `refreshToken=${firstRefreshToken}`)

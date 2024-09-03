@@ -49,7 +49,6 @@ export const    UsersService = {
 
         const user:WithId<UserAccountDBType> | null = await UsersRepository.findByLoginOrEmail(loginOrEmail)
         if(!user) return null
-        console.log(user)
         const passwordHash = await this._generateHash(password, user.accountData.passwordSalt)
 
         if(user.accountData.passwordHash !== passwordHash){
