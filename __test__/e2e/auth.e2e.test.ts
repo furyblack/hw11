@@ -13,12 +13,17 @@ let user;
 let firstRefreshToken: any;
 
 describe('/auth', () => {
+    jest.setTimeout(10000)
     const mongoURI = 'mongodb+srv://miha:miha2016!@cluster0.expiegq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
     beforeAll(async () => {
         await mongoose.connect(mongoURI, {dbName:'testUser'})
+       await request(app)
+            .delete('/testing/all-data')
 
     });
     afterAll(async () => {
+        await request(app)
+            .delete('/testing/all-data')
         /* Closing database connection after each test. */
         await mongoose.connection.close()
     })
@@ -34,14 +39,14 @@ describe('/auth', () => {
         expect(createResponse.body.id).toEqual(expect.any(String));
         user = createResponse.body;
     });
-
+    //
     it('should login user first time', async () => {
         console.log('FIRST')
         const loginResponse = await request(app)
 
             .post('/auth/login')
             .send({loginOrEmail: userCreateData.login, password: userCreateData.password})
-            //.expect(200);
+            .expect(200);
         firstRefreshToken = loginResponse.headers['set-cookie'][0].split(';')[0].split('=')[1];
         console.log('LOGIN', loginResponse.body)
         const sessionsResponse1 = await request(app)
@@ -72,7 +77,6 @@ describe('/auth', () => {
             .post('/auth/logout')
             .set('Cookie', `refreshToken=${firstRefreshToken}`)
             .expect(204);
-
     });
 
     //третий логин который будем удалять
