@@ -14,8 +14,6 @@ const userCreateData = {
     email: "miha25646@gmail.com"
 }
 
-
-
 let user;
 
 describe('users', ()=>{
