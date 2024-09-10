@@ -3,18 +3,18 @@ import {agent as request} from 'supertest'
 import {app} from "../../src/settings";
 
 
-const userCreateDate = {
+const userCreateData = {
     login:"testUser",
     password:"testPassword",
     email:"testuser@example.com"
 }
 
-let user
-let refreshToken
-let commentId
+let user: {id:string, login:string, email:string}
+let refreshToken:string
+let commentId: string
 
 describe('/comments', ()=> {
-
+    jest.setTimeout(10000)
     const mongoURI = 'mongodb+srv://miha:miha2016!@cluster0.expiegq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
     beforeAll(async () => {
 
@@ -26,7 +26,7 @@ describe('/comments', ()=> {
         const createUserResponse = await request(app)
             .post("/users")
             .auth("admin", "qwerty")
-            .send(userCreateDate)
+            .send(userCreateData)
             .expect(201)
 
         user = createUserResponse.body
@@ -35,20 +35,52 @@ describe('/comments', ()=> {
 
         const loginResponse = await request(app)
             .post("/auth/login")
-            .send({loginOrEmail: userCreateDate.login, password:userCreateDate.password})
+            .send({loginOrEmail: userCreateData.login, password:userCreateData.password})
             .expect(200)
 
         refreshToken = loginResponse.headers['set-cookie'][0].split(";")[0].split('=')[1]
 
         //создаем пост и комент
 
+        const createPostResponse = await request(app)
+            .post('/posts')
+            .auth('admin', 'qwerty')
+            .send({title:'test post', content:'test content'})
+            .expect(201)
+
+        const postId: string = createPostResponse.body.id
+
+        const createCommentResponse = await request(app)
+            .post(`/posts/${postId}/comments`)
+            .set('Cookie', `refreshToken=${refreshToken}`)
+            .send({content:'Test comment'})
+            .expect(201)
+
+        commentId = createCommentResponse.body.id
 
     })
+
     afterAll(async () => {
         /* Closing database connection after each test. */
+        await request(app).delete('/testing/all-data')
         await mongoose.connection.close()
-    })
-    it('commentlikes', ()=>{
+    });
 
+    it('should like the comment', async ()=>{
+        await request(app)
+            .put(`/comments/${commentId}/like-status`)
+            .set('Cookie', `refreshToken=${refreshToken}`)
+            .send({likeStatus:'Like'})
+            .expect(204)
+
+        const getCommentResponse = await request(app)
+            .get(`/comments/${commentId}`)
+            .set('Cookie', `refreshToken=${refreshToken}`)
+            .expect(200)
+
+
+        expect(getCommentResponse.body.likesInfo.likesCount).toBe(1)
+        expect(getCommentResponse.body.likesInfo.dislikesCount).toBe(0)
+        expect(getCommentResponse.body.likesInfo.myStatus).toBe('Like')
     })
 })

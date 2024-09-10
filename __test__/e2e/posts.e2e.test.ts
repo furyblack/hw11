@@ -34,6 +34,7 @@ let post: PostOutputType
 let blog: BlogOutputType
 
 describe('posts e2e test', () => {
+    jest.setTimeout(30000)
     describe('blogs', ()=> {
 
         it('should create blog with correct input data', async () => {
