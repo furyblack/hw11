@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 import {agent as request} from 'supertest'
 import {app} from "../../src/settings";
+import {PostOutputType} from "../../src/types/posts/output";
+import {BlogOutputType} from "../../src/types/blogs/output";
 
 
 const userCreateData = {
@@ -9,6 +11,22 @@ const userCreateData = {
     email:"testuser@example.com"
 }
 
+const postCreateData = {
+    title: "testpost",
+    shortDescription: "testpostdescription",
+    content: "test content for post",
+    blogId:  new mongoose.Types.ObjectId().toString()
+}
+const postUpdateData = {
+    title: "updated testpost",
+    shortDescription: "updated testpostdescription",
+    content: "updated test content for post",
+    blogId: new mongoose.Types.ObjectId().toString()
+}
+let post: PostOutputType
+let blog: BlogOutputType
+
+let firstRefreshToken: any;
 let user: {id:string, login:string, email:string}
 let refreshToken:string
 let commentId: string
@@ -21,52 +39,82 @@ describe('/comments', ()=> {
 
         await mongoose.connect(mongoURI, {dbName: 'testLikes'}) //'testUser'
         await request(app).delete("/testing/all-data")
-
-
-        //создаем пользователя
-        const createUserResponse = await request(app)
-            .post("/users")
-            .auth("admin", "qwerty")
-            .send(userCreateData)
-            .expect(201)
-
-        user = createUserResponse.body
-
-        //логинимся и получаем refresh token
-
-        const loginResponse = await request(app)
-            .post("/auth/login")
-            .send({loginOrEmail: userCreateData.login, password:userCreateData.password})
-            .expect(200)
-
-        refreshToken = loginResponse.headers['set-cookie'][0].split(";")[0].split('=')[1]
-
-        //создаем пост и комент
-
-        const createPostResponse = await request(app)
-            .post('/posts')
-            .auth('admin', 'qwerty')
-            .send({title:'test post', content:'test content',shortDescription:'testtesttsettset'})
-            .expect(400)
-
-        console.log("123",createPostResponse.body)
-
-        const postId: string = createPostResponse.body.id
-
-        const createCommentResponse = await request(app)
-            .post(`/posts/${postId}/comments`)
-            .set('Cookie', `refreshToken=${refreshToken}`)
-            .send({content:'Test comment'})
-            .expect(201)
-
-        commentId = createCommentResponse.body.id
-
     })
 
     afterAll(async () => {
         /* Closing database connection after each test. */
         await request(app).delete('/testing/all-data')
         await mongoose.connection.close()
+    });
+
+
+
+    //создаем пользователя
+    it('should create user with correct input data', async ()=>{
+        const createResponse=  await request(app)
+            .post('/users')
+            .auth("admin", "qwerty")
+            .send(userCreateData)
+            .expect(201)
+        expect(createResponse.body.login).toEqual(userCreateData.login)
+        expect(createResponse.body.email).toEqual(userCreateData.email)
+        expect(createResponse.body.id).toEqual(expect.any(String))
+        user = createResponse.body
+    })
+
+    //логинимся и получаем refresh token
+    it('should login user first time', async () => {
+
+        const loginResponse = await request(app)
+
+            .post('/auth/login')
+            .send({loginOrEmail: userCreateData.login, password: userCreateData.password})
+            .expect(200);
+        firstRefreshToken = loginResponse.headers['set-cookie'][0].split(';')[0].split('=')[1];
+        console.log('LOGIN', loginResponse.body)
+        const sessionsResponse1 = await request(app)
+            .get('/security/devices')
+            .set('Cookie', `refreshToken=${firstRefreshToken}`)
+            .expect(200);
+
+        expect(sessionsResponse1.body).toHaveLength(1);
+    });
+
+    //создаем пост и комент
+    it('should create post with correct input data', async () =>{
+        postCreateData.blogId = blog.id as string
+        postUpdateData.blogId = blog.id as string
+        const createResponse = await request(app)
+
+            .post('/posts')
+            .auth('admin', 'qwerty')
+            .send(postCreateData)
+            .expect(201)
+        expect(createResponse.body.title).toEqual(postCreateData.title)
+        expect(createResponse.body.shortDescription).toEqual(postCreateData.shortDescription)
+        expect(createResponse.body.content).toEqual(postCreateData.content)
+        expect(createResponse.body.blogId).toEqual(postCreateData.blogId)
+        expect(createResponse.body.id).toEqual(expect.any(String))
+        post = createResponse.body
+    })
+
+    it('should create comment for post', async () => {
+        const commentCreateData = {
+            content: "This is a test comment for the post."
+        };
+
+        const createCommentResponse = await request(app)
+            .post(`/posts/${post.id}/comments`)
+            .set('Cookie', `refreshToken=${firstRefreshToken}`)
+            .send(commentCreateData)
+            .expect(201);
+
+        expect(createCommentResponse.body.content).toEqual(commentCreateData.content);
+        expect(createCommentResponse.body.commentatorInfo.userId).toEqual(user.id);
+        expect(createCommentResponse.body.commentatorInfo.userLogin).toEqual(user.login);
+        expect(createCommentResponse.body.id).toEqual(expect.any(String));
+
+        commentId = createCommentResponse.body.id;
     });
 
     it('should like the comment', async ()=>{
