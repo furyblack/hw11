@@ -2,6 +2,7 @@ import request  from "supertest";
 import {app} from "../../src/settings";
 import {BlogOutputType} from "../../src/types/blogs/output";
 import {PostOutputType} from "../../src/types/posts/output";
+import mongoose from "mongoose";
 
 const incorrectPostData = {
     title: "",
@@ -14,14 +15,14 @@ const postCreateData = {
     title: "testpost",
     shortDescription: "testpostdescription",
     content: "test content for post",
-    blogId:  "test content for post",
+    blogId:  new mongoose.Types.ObjectId().toString()
 }
 
 const postUpdateData = {
     title: "updated testpost",
     shortDescription: "updated testpostdescription",
     content: "updated test content for post",
-    blogId: "updated string"
+    blogId: new mongoose.Types.ObjectId().toString()
 }
 
 const blogCreateData = {
@@ -34,7 +35,13 @@ let post: PostOutputType
 let blog: BlogOutputType
 
 describe('posts e2e test', () => {
-    jest.setTimeout(30000)
+    jest.setTimeout(10000)
+    const mongoURI = 'mongodb://localhost:27017'
+
+    beforeAll(async ()=>{
+        await mongoose.connect(mongoURI, {dbName: 'testLikes'})
+    })
+
     describe('blogs', ()=> {
 
         it('should create blog with correct input data', async () => {
@@ -87,13 +94,14 @@ describe('posts e2e test', () => {
             })
             it('should get post by id', async () =>{
                 const createResponse = await request(app)
-                    .get('/posts/' + post!.id)
+                    .get('/posts/' + post.id)
                     .expect(200)
                 expect(createResponse.body).toEqual(post!)
             })
             it('shouldn"t  get post by id', async ()=>{
+                const nonExistingId = new mongoose.Types.ObjectId();
                 await request(app)
-                    .get('/posts/' + '99999999')
+                    .get('/posts/' + nonExistingId)
                     .expect(404)
             })
 
@@ -108,7 +116,7 @@ describe('posts e2e test', () => {
 
             it('shouldn"t update post with correct input data and incorrect blogId', async ()=>{
                  await request(app)
-                    .put('/posts/' + '999999' )
+                    .put('/posts/' + post!.id )
                     .auth("admin", "qwerty")
                     .send(postUpdateData)
                     .expect(404)

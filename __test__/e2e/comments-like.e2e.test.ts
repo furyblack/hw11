@@ -15,7 +15,8 @@ let commentId: string
 
 describe('/comments', ()=> {
     jest.setTimeout(10000)
-    const mongoURI = 'mongodb+srv://miha:miha2016!@cluster0.expiegq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
+    // const mongoURI = 'mongodb+srv://miha:miha2016!@cluster0.expiegq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
+    const mongoURI = 'mongodb://localhost:27017'
     beforeAll(async () => {
 
         await mongoose.connect(mongoURI, {dbName: 'testLikes'}) //'testUser'
@@ -45,8 +46,10 @@ describe('/comments', ()=> {
         const createPostResponse = await request(app)
             .post('/posts')
             .auth('admin', 'qwerty')
-            .send({title:'test post', content:'test content'})
-            .expect(201)
+            .send({title:'test post', content:'test content',shortDescription:'testtesttsettset'})
+            .expect(400)
+
+        console.log("123",createPostResponse.body)
 
         const postId: string = createPostResponse.body.id
 
