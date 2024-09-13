@@ -29,12 +29,12 @@ const postUpdateData = {
     content: "updated test content for post",
     blogId: new mongoose.Types.ObjectId().toString()
 }
+
 let post: PostOutputType
 let blog: BlogOutputType
-
-let firstRefreshToken: any;
+let accessToken: string
+let firstRefreshToken: string;
 let user: {id:string, login:string, email:string}
-let refreshToken:string
 let commentId: string
 
 describe('/comments', ()=> {
@@ -84,6 +84,7 @@ describe('/comments', ()=> {
             .expect(200);
 
         expect(sessionsResponse1.body).toHaveLength(1);
+        accessToken = loginResponse.body.accessToken;
     });
     //создаем блог
     it('should create blog with correct input data', async () => {
@@ -98,8 +99,8 @@ describe('/comments', ()=> {
 
     //создаем пост и комент
     it('should create post with correct input data', async () =>{
-        postCreateData.blogId = blog.id
-        postUpdateData.blogId = blog.id
+        postCreateData.blogId = blog.id as string
+        postUpdateData.blogId = blog.id as string
         const createResponse = await request(app)
 
             .post('/posts')
@@ -121,7 +122,7 @@ describe('/comments', ()=> {
 
         const createCommentResponse = await request(app)
             .post(`/posts/${post.id}/comments`)
-            .set('Cookie', `refreshToken=${firstRefreshToken}`)
+            .set('Authorization', `Bearer ${accessToken}`)
             .send(commentCreateData)
             .expect(201);
 
@@ -136,13 +137,13 @@ describe('/comments', ()=> {
     it('should like the comment', async ()=>{
         await request(app)
             .put(`/comments/${commentId}/like-status`)
-            .set('Cookie', `refreshToken=${refreshToken}`)
+            .set('Authorization', `Bearer ${accessToken}`)
             .send({likeStatus:'Like'})
             .expect(204)
 
         const getCommentResponse = await request(app)
             .get(`/comments/${commentId}`)
-            .set('Cookie', `refreshToken=${refreshToken}`)
+            .set('Authorization', `Bearer ${accessToken}`)
             .expect(200)
 
 
