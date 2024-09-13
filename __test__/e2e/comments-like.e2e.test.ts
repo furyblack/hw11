@@ -151,4 +151,95 @@ describe('/comments', ()=> {
         expect(getCommentResponse.body.likesInfo.dislikesCount).toBe(0)
         expect(getCommentResponse.body.likesInfo.myStatus).toBe('Like')
     })
+    it('should dislike the comment', async ()=>{
+        await request(app)
+            .put(`/comments/${commentId}/like-status`)
+            .set('Authorization', `Bearer ${accessToken}`)
+            .send({likeStatus:'Dislike'})
+            .expect(204)
+
+        const getCommentResponse = await request(app)
+            .get(`/comments/${commentId}`)
+            .set('Authorization', `Bearer ${accessToken}`)
+            .expect(200)
+
+
+        expect(getCommentResponse.body.likesInfo.likesCount).toBe(0)
+        expect(getCommentResponse.body.likesInfo.dislikesCount).toBe(1)
+        expect(getCommentResponse.body.likesInfo.myStatus).toBe('Dislike')
+
+    })
+
+    it('should reset like to "None" and update like count', async () => {
+        // Лайк комментария
+        await request(app)
+            .put(`/comments/${commentId}/like-status`)
+            .set('Authorization', `Bearer ${accessToken}`)
+            .send({ likeStatus: 'Like' })
+            .expect(204);
+
+        // Проверяем, что лайк успешно применён
+        let getCommentResponse = await request(app)
+            .get(`/comments/${commentId}`)
+            .set('Authorization', `Bearer ${accessToken}`)
+            .expect(200);
+
+        expect(getCommentResponse.body.likesInfo.likesCount).toBe(1);
+        expect(getCommentResponse.body.likesInfo.dislikesCount).toBe(0);
+        expect(getCommentResponse.body.likesInfo.myStatus).toBe('Like');
+
+        // Сброс лайка (устанавливаем статус на "None")
+        await request(app)
+            .put(`/comments/${commentId}/like-status`)
+            .set('Authorization', `Bearer ${accessToken}`)
+            .send({ likeStatus: 'None' })
+            .expect(204);
+
+        // Проверяем, что лайк был сброшен
+        getCommentResponse = await request(app)
+            .get(`/comments/${commentId}`)
+            .set('Authorization', `Bearer ${accessToken}`)
+            .expect(200);
+
+        expect(getCommentResponse.body.likesInfo.likesCount).toBe(0);
+        expect(getCommentResponse.body.likesInfo.dislikesCount).toBe(0);
+        expect(getCommentResponse.body.likesInfo.myStatus).toBe('None');
+    });
+
+    it('should reset dislike to "None" and update dislike count', async () => {
+        // Дизлайк комментария
+        await request(app)
+            .put(`/comments/${commentId}/like-status`)
+            .set('Authorization', `Bearer ${accessToken}`)
+            .send({ likeStatus: 'Dislike' })
+            .expect(204);
+
+        // Проверяем, что дизлайк успешно применён
+        let getCommentResponse = await request(app)
+            .get(`/comments/${commentId}`)
+            .set('Authorization', `Bearer ${accessToken}`)
+            .expect(200);
+
+        expect(getCommentResponse.body.likesInfo.likesCount).toBe(0);
+        expect(getCommentResponse.body.likesInfo.dislikesCount).toBe(1);
+        expect(getCommentResponse.body.likesInfo.myStatus).toBe('Dislike');
+
+        // Сброс дизлайка (устанавливаем статус на "None")
+        await request(app)
+            .put(`/comments/${commentId}/like-status`)
+            .set('Authorization', `Bearer ${accessToken}`)
+            .send({ likeStatus: 'None' })
+            .expect(204);
+
+        // Проверяем, что дизлайк был сброшен
+        getCommentResponse = await request(app)
+            .get(`/comments/${commentId}`)
+            .set('Authorization', `Bearer ${accessToken}`)
+            .expect(200);
+
+        expect(getCommentResponse.body.likesInfo.likesCount).toBe(0);
+        expect(getCommentResponse.body.likesInfo.dislikesCount).toBe(0);
+        expect(getCommentResponse.body.likesInfo.myStatus).toBe('None');
+    });
+
 })
