@@ -11,6 +11,12 @@ const userCreateData = {
     email:"testuser@example.com"
 }
 
+const blogCreateData = {
+    name: "test",
+    description: "test",
+    websiteUrl: "https://google.com"
+}
+
 const postCreateData = {
     title: "testpost",
     shortDescription: "testpostdescription",
@@ -33,8 +39,8 @@ let commentId: string
 
 describe('/comments', ()=> {
     jest.setTimeout(10000)
-    // const mongoURI = 'mongodb+srv://miha:miha2016!@cluster0.expiegq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
-    const mongoURI = 'mongodb://localhost:27017'
+ //const mongoURI = 'mongodb+srv://miha:miha2016!@cluster0.expiegq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
+     const mongoURI = 'mongodb://localhost:27017'
     beforeAll(async () => {
 
         await mongoose.connect(mongoURI, {dbName: 'testLikes'}) //'testUser'
@@ -79,11 +85,21 @@ describe('/comments', ()=> {
 
         expect(sessionsResponse1.body).toHaveLength(1);
     });
+    //создаем блог
+    it('should create blog with correct input data', async () => {
+
+        const createResponse = await request(app)
+            .post('/blogs')
+            .auth("admin", "qwerty")
+            .send(blogCreateData)
+            .expect(201)
+        blog = createResponse.body; // СОХРАНЯЕМ БЛОГ АЙ ДИ
+    })
 
     //создаем пост и комент
     it('should create post with correct input data', async () =>{
-        postCreateData.blogId = blog.id as string
-        postUpdateData.blogId = blog.id as string
+        postCreateData.blogId = blog.id
+        postUpdateData.blogId = blog.id
         const createResponse = await request(app)
 
             .post('/posts')
