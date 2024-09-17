@@ -13,7 +13,6 @@ export const    UsersService = {
 
         const newUser = await UserFactory
             .createConfirmedUser({login, password, email})
-        console.log(newUser)
         return await UsersRepository.createUser(newUser)
 
     },
