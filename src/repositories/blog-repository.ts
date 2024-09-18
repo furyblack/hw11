@@ -16,19 +16,16 @@ export class BlogMapper {
     }
 }
 
+
+
 export class BlogRepository {
 
-    static async createBlog(blogParams: CreateNewBlogType): Promise<BlogOutputType> {
-        const newBlog: BlogMongoDbType = {
-            name: blogParams.name,
-            description: blogParams.description,
-            websiteUrl: blogParams.websiteUrl,
-            createdAt: new Date()
-        }
+    static async createBlog(blog: BlogMongoDbType): Promise<BlogOutputType> {
 
-        const newBlogToDb = new BlogModel(newBlog)
+
+        const newBlogToDb = new BlogModel(blog)
         await newBlogToDb.save()
-        return BlogMapper.toDto({...newBlog, _id: newBlogToDb._id})
+        return BlogMapper.toDto({...newBlogToDb, _id: newBlogToDb._id})
     }
 
     static async updateBlog(blogId: string, updateData: UpdateBlogType): Promise<boolean> {

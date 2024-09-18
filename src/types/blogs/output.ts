@@ -1,3 +1,15 @@
+export class BlogOutputClass{
+    constructor(
+    public id: string,
+    public name: string,
+    public description: string,
+    public websiteUrl: string,
+    public isMembership: boolean,
+    public createdAt: string
+    ) {
+    }
+}
+
 export type BlogOutputType =  {
     "id": string,
     "name": string,
@@ -6,12 +18,15 @@ export type BlogOutputType =  {
     "isMembership": boolean,
     "createdAt": string
 }
-export type BlogMongoDbType =  {
-    //"_id": string,
-    "name": string,
-    "description": string,
-    "websiteUrl": string,
-    "createdAt": Date
+export class BlogMongoDbType  {
+    createdAt:Date
+    constructor(
+  public  name: string,
+  public description: string,
+  public websiteUrl: string,
+    ) {
+        this.createdAt = new Date()
+    }
 }
 
 export type blogSortData = {
