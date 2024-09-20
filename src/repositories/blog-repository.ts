@@ -1,5 +1,5 @@
 import {BlogModel} from "../db/db";
-import {CreateNewBlogType, UpdateBlogType} from "../types/blogs/input";
+import {UpdateBlogType} from "../types/blogs/input";
 import {BlogOutputType, BlogMongoDbType} from "../types/blogs/output";
 import {ObjectId, WithId} from "mongodb";
 
@@ -15,7 +15,6 @@ export class BlogMapper {
         }
     }
 }
-
 
 
 export class BlogRepository {

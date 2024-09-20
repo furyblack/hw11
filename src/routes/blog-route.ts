@@ -36,7 +36,6 @@ blogRoute.get('/:id', async (req: Request, res: Response) => {
     }
 })
 
-
 blogRoute.get('/:blogId/posts', async (req: RequestWithQueryAndParams<{
     blogId: string
 }, blogQuerySortData>, res: Response) => {
