@@ -2,7 +2,6 @@ import {CreateNewPostType, UpdatePostType} from "../types/posts/input";
 import {PostMongoDbType, PostOutputType} from "../types/posts/output";
 import {PostRepository} from "../repositories/post-repository";
 
-
 export class PostMapper{
     static toDto(post:PostMongoDbType):PostOutputType{
         return {
@@ -16,7 +15,6 @@ export class PostMapper{
         }
     }
 }
-
 export class PostService{
 
     static async createPost(postParams: CreateNewPostType): Promise<PostOutputType | null>{
