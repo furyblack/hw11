@@ -19,7 +19,7 @@ export class BlogsService {
         return newPost
     }
 
-    // переносим часть функционала  с blog route ( создание блога)
+    //переносим часть функционала  с blog route ( создание блога)
     static async createBlog(data: CreateNewBlogType) {
         const {name, description, websiteUrl} = data
 
