@@ -4,7 +4,6 @@ import {ObjectId, SortDirection, WithId} from "mongodb";
 import {UserOutputType, userSortData} from "../types/users/outputUserType";
 import {UserAccountDBType} from "../types/users/inputUsersType";
 
-
 export class UserMapper {
     static toDto(user: WithId<UserAccountDBType>): UserOutputType {
         return {

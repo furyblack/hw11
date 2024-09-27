@@ -15,7 +15,6 @@ import {QueryCommentRepository} from "../repositories/query-comment-repository";
 import {ObjectId} from "mongodb";
 import {extractUserIdFromToken} from "../middlewares/comments/comments-middleware";
 
-
 export const postRoute = Router({})
 
 postRoute.get('/', async (req: RequestWithQuery<postQuerySortData>, res: Response<PaginationOutputType<PostOutputType[]>> ) =>{
