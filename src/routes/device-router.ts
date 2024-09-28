@@ -3,7 +3,6 @@ import {authMiddlewareRefresh} from "../middlewares/auth/auth-middleware";
 import {refreshTokenExpiration} from "../application/jwt-service"
 import {QuerySessionRepository} from "../repositories/query-session-repository";
 
-
 export const deviceRouter = Router({})
 
 deviceRouter.get('/devices', authMiddlewareRefresh, async (req: Request, res: Response)=>{
