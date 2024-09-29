@@ -10,7 +10,6 @@ export type UpdateBlogType= {
     "websiteUrl": string
 }
 
-
 export type blogQuerySortData = {
     pageSize?: number,
     pageNumber?: number,
