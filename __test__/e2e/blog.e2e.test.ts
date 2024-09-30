@@ -22,7 +22,8 @@ const blogUpdateData = {
 let blog;
 
 describe('blogs', ()=>{
-    const mongoURI = 'mongodb+srv://miha:miha2016!@cluster0.expiegq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
+    // const mongoURI = 'mongodb+srv://miha:miha2016!@cluster0.expiegq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
+    const mongoURI = 'mongodb://localhost:27017'
     beforeAll(async () => {
         await mongoose.connect(mongoURI, {dbName:'testUser'})
 
