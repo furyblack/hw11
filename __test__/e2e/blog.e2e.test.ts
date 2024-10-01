@@ -81,7 +81,6 @@ describe('blogs', ()=>{
             .get('/blogs/' + '54554')
             .expect(404)
 
-
     })
 
     it('should update blog with correct input data', async ()=>{
