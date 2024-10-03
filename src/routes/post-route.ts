@@ -56,7 +56,6 @@ postRoute.get('/:postId/comments', extractUserIdFromToken, async (req:RequestWit
 
         res.status(200).send(comments)
         return
-
     }
     catch(error){
         console.error("Error fetching comments for post:", error)
