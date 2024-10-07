@@ -4,22 +4,18 @@ export type CreateNewPostType = {
     "shortDescription": string,
     "content": string,
     "blogId": string
-   
 }
 
 export type CreateNewPostForBlogType= {
     "title": string,
     "shortDescription": string,
     "content": string,
-
-
 }
 
 export type UpdatePostType= {
     "title": string,
     "shortDescription": string,
     "content": string
-
 }
 
 export type postQuerySortData = {
