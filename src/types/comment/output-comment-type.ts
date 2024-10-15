@@ -16,7 +16,6 @@ export type CommentOutputType = {
 }
 
 export type CommentMongoDbType =  {
-
     "postId":string,
     "content": string,
     "commentatorInfo":{
