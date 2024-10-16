@@ -10,7 +10,6 @@ import mongoose from "mongoose";
 
 dotenv.config()
 const mongoUri = process.env.MONGO_URL as string // вытащили из енви строку  подключения
-
 const dbName =  process.env.DB_NAME
 
 
