@@ -22,7 +22,6 @@ const commentValidator = body('content').isString().withMessage('content must be
     max: 300
 })
 
-
 export const postIdValidator = body('blogId').isString().custom  (async (value:string) => {
     const blog = await QueryBlogRepository.getById(value);
     console.log(blog)
