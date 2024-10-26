@@ -9,7 +9,6 @@ export class SessionRepository{
     static async findSessionByDeviceId(deviceId: string): Promise<SessionType | null> {
         return await SessionModel.findOne({ deviceId });//findOne({ deviceId });
     }
-
     static async updateSession(session: SessionType): Promise<void> {
         await SessionModel.updateOne(
             { deviceId: session.deviceId },
