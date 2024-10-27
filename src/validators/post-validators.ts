@@ -29,7 +29,6 @@ export const postIdValidator = body('blogId').isString().custom  (async (value:s
         throw Error ('Incorrect postId')
     }
     return true
-
 }
 ).withMessage('Incorrect PostId')
 
