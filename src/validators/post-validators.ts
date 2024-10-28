@@ -34,5 +34,4 @@ export const postIdValidator = body('blogId').isString().custom  (async (value:s
 
 export const postValidation = () =>[titleValidator, shortDescriptionValidator, contentValidator, postIdValidator, inputValidationMiddleware]
 export const postForBlogValidation = () =>[titleValidator, shortDescriptionValidator, contentValidator, inputValidationMiddleware]
-
 export const commentForPostValidation = ()=>[commentValidator, inputValidationMiddleware]
