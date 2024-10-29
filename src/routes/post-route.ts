@@ -53,7 +53,6 @@ postRoute.get('/:postId/comments', extractUserIdFromToken, async (req:RequestWit
     }
     try {
         const comments = await QueryPostRepository.getAllCommentsForPost(postId, paginationData, userId)
-
         res.status(200).send(comments)
         return
     }
