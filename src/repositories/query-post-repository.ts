@@ -99,7 +99,6 @@ export class QueryPostRepository {
     }
 
 
-
     static async getById(id: string): Promise<PostOutputType | null> {
         const post: PostMongoDbType | null = await PostModel.findOne({ _id: new ObjectId(id) });
         if (!post) {
