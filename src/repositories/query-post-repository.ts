@@ -5,7 +5,6 @@ import { PaginationOutputType } from "../types/blogs/output";
 import { ObjectId, SortDirection } from "mongodb";
 import { CommentOutputType } from "../types/comment/output-comment-type";
 
-
 export class QueryPostRepository {
 
 
