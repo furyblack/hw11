@@ -31,7 +31,6 @@ export class QueryPostRepository {
     }
 
 
-
     static async getAllCommentsForPost(postId: string, sortData: postSortData, userId: string | null): Promise<PaginationOutputType<CommentOutputType[]>> {
         const { pageSize, pageNumber, sortBy, sortDirection } = sortData;
         const search = { postId: postId };
