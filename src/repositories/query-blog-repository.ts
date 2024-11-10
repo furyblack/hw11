@@ -18,6 +18,7 @@ export class QueryBlogRepository {
 
 // get by ID для конкретного поста
 
+
     static async getAllPostsForBlog(blogId: string,sortData: blogSortData): Promise<PaginationOutputType<PostOutputType[]>> {
         const {pageSize, pageNumber, sortBy, sortDirection, searchNameTerm} = sortData
         const search = {blogId: blogId}
@@ -27,7 +28,6 @@ export class QueryBlogRepository {
             .limit(pageSize)
             .skip((pageNumber - 1) * pageSize)
             .lean()
-
         // подсчёт элементов (может быть вынесено во вспомогательный метод)
         const totalCount = await PostModel.countDocuments(search)
 
