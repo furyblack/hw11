@@ -16,7 +16,6 @@ export class QueryBlogRepository {
         return BlogMapper.toDto(blog)
     }
 
-// get by ID для конкретного поста
 
 
     static async getAllPostsForBlog(blogId: string,sortData: blogSortData): Promise<PaginationOutputType<PostOutputType[]>> {
