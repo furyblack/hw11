@@ -3,7 +3,8 @@ import {PostRepository} from "../repositories/post-repository";
 import {CreateNewPostType} from "../types/posts/input";
 import {BlogRepository} from "../repositories/blog-repository";
 import {CreateNewBlogType} from "../types/blogs/input";
-import {BlogMongoDbType, BlogOutputType} from "../types/blogs/output";
+import {BlogMongoDbType} from "../types/blogs/output";
+import {QueryBlogRepository} from "../repositories/query-blog-repository";
 
 export class BlogsService {
 
@@ -25,8 +26,9 @@ export class BlogsService {
 
         const newBlogData = new BlogMongoDbType(name,description,websiteUrl)
 
-        const newBlog: BlogOutputType = await BlogRepository.createBlog(newBlogData)
-        return newBlog
+        const newBlogId: string = await BlogRepository.createBlog(newBlogData)
+        const  createdBlog = await QueryBlogRepository.getById(newBlogId)
+        return createdBlog!
     }
 
     static async deleteBlog(id: string): Promise<boolean> {

@@ -5,6 +5,7 @@ import {ObjectId, WithId} from "mongodb";
 
 export class BlogMapper {
     static toDto(blog: WithId<BlogMongoDbType>): BlogOutputType {
+        console.log(blog)
         return {
             id: blog._id.toString(),
             name: blog.name,
@@ -19,12 +20,10 @@ export class BlogMapper {
 
 export class BlogRepository {
 
-    static async createBlog(blog: BlogMongoDbType): Promise<BlogOutputType> {
-
-
+    static async createBlog(blog: BlogMongoDbType): Promise<string> {
         const newBlogToDb = new BlogModel(blog)
         await newBlogToDb.save()
-        return BlogMapper.toDto({...newBlogToDb, _id: newBlogToDb._id})
+        return newBlogToDb._id.toString()
     }
 
     static async updateBlog(blogId: string, updateData: UpdateBlogType): Promise<boolean> {
