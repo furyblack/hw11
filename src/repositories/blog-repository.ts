@@ -36,7 +36,7 @@ export class BlogRepository {
 
     static async deleteBlog(id: string): Promise<boolean> {
         try {
-            const result = await BlogModel.deleteOne({_id: new ObjectId(id)}); //было .deleteOne({_id: new ObjectId(id)});
+            const result = await BlogModel.deleteOne({_id: new ObjectId(id)});
             return result.deletedCount === 1;
         } catch (error) {
             console.error("Error deleting blog:", error);

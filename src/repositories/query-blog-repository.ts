@@ -17,7 +17,6 @@ export class QueryBlogRepository {
     }
 
 
-
     static async getAllPostsForBlog(blogId: string,sortData: blogSortData): Promise<PaginationOutputType<PostOutputType[]>> {
         const {pageSize, pageNumber, sortBy, sortDirection, searchNameTerm} = sortData
         const search = {blogId: blogId}
