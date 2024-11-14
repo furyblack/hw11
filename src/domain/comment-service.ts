@@ -30,7 +30,6 @@ export class CommentService{
                 likesCount: 0,
                 dislikesCount: 0,
             }
-
         }
         return   await CommentRepository.createComment(newComment)
     }
