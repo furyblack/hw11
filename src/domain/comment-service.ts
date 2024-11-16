@@ -3,7 +3,6 @@ import {CommentRepository} from "../repositories/comment-repository";
 import {PostRepository} from "../repositories/post-repository";
 import {CommentModel, LikeModel, LikeStatusEnum} from "../db/db";
 
-
 type CreateCommentServiceType ={
     postId:string,
     content:string,
