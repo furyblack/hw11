@@ -13,7 +13,6 @@ deviceRouter.get('/devices', authMiddlewareRefresh, async (req: Request, res: Re
    }catch (error){
        res.status(500).send({error:'something goes wrong'})
    }
-
 })
 
 deviceRouter.delete('/devices', authMiddlewareRefresh, async (req:Request, res:Response)=>{
