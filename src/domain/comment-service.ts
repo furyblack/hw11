@@ -15,7 +15,6 @@ export class CommentService{
 
         const post= await PostRepository.findPostById(postId)
         if(!post) return null
-
         const newComment:CommentMongoDbType={
             postId:postId,
             content: content,
