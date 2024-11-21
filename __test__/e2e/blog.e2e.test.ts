@@ -66,8 +66,6 @@ describe('blogs', ()=>{
             .auth("adminnn", "qwerty")
             .send(blogCreateData)
             .expect(401)
-
-
     })
     it('should get blog by id', async ()=>{
         const createResponse=  await request(app)
