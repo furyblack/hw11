@@ -50,7 +50,6 @@ export class CommentService{
         }
         await updateCommentLikeCounts(commentId);
     }
-
 }
 const updateCommentLikeCounts = async (commentId:string)=>{
     const likesCount  = await LikeModel.countDocuments({commentId, status:LikeStatusEnum.LIKE})
