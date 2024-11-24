@@ -57,7 +57,6 @@ describe('blogs', ()=>{
         expect(createResponse.body.errorsMessages[0].field).toEqual('name')
         expect(createResponse.body.errorsMessages[1].field).toEqual('description')
         expect(createResponse.body.errorsMessages[2].field).toEqual('websiteUrl')
-
     })
 
     it("shouldn't create blog without authorization", async ()=>{
