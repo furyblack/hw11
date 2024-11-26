@@ -59,6 +59,5 @@ const updateCommentLikeCounts = async (commentId:string)=>{
     await CommentModel.findByIdAndUpdate(commentId,{
         'likesInfo.likesCount':likesCount,
         'likesInfo.dislikesCount':dislikesCount,
-
     })
 }
