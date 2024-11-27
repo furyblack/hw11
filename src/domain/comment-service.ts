@@ -31,7 +31,6 @@ export class CommentService{
         return   await CommentRepository.createComment(newComment)
     }
 
-
     static async updateLikeStatus(commentId: string, userId: string, likeStatus: LikeStatusEnum): Promise<void> {
         const existingLike = await LikeModel.findOne({ commentId, userId });
 
