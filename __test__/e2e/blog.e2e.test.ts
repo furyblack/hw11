@@ -26,7 +26,6 @@ describe('blogs', ()=>{
     const mongoURI = 'mongodb://localhost:27017'
     beforeAll(async () => {
         await mongoose.connect(mongoURI, {dbName:'testUser'})
-
     });
     afterAll(async () => {
         /* Closing database connection after each test. */
@@ -42,7 +41,6 @@ describe('blogs', ()=>{
             expect(createResponse.body.description).toEqual(blogCreateData.description)
             expect(createResponse.body.websiteUrl).toEqual(blogCreateData.websiteUrl)
             expect(createResponse.body.id).toEqual(expect.any(String))
-
             //записываем данные полученного блога
         blog = createResponse.body
     })
