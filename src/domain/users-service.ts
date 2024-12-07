@@ -14,7 +14,6 @@ export const    UsersService = {
         const newUser = await UserFactory
             .createConfirmedUser({login, password, email})
         return await UsersRepository.createUser(newUser)
-
     },
 
     async createUnconfirmedUser(login: string, email: string, password: string): Promise<boolean | null> {
