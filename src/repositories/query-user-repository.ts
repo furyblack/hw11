@@ -11,7 +11,6 @@ export class UserMapper {
             login: user.accountData.userName,
             email: user.accountData.email,
             createdAt: user.accountData.createdAt.toISOString()
-
         }
     }
 }
@@ -21,7 +20,6 @@ export class UserQueryRepository {
         let {pageSize, pageNumber, sortBy, sortDirection, searchLoginTerm, searchEmailTerm } = sortData
         let filter:any = {
             $or:[]
-
         }
         if(sortBy==='login'){
             sortBy = 'userName'
