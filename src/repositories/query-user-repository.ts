@@ -17,7 +17,7 @@ export class UserMapper {
 
 export class UserQueryRepository {
     static async getAll(sortData: userSortData): Promise<PaginationOutputType<UserOutputType[]>> {
-        let {pageSize, pageNumber, sortBy, sortDirection, searchLoginTerm, searchEmailTerm } = sortData
+        let {pageSize, pageNumber, sortBy, sortDirection } = sortData
         let filter:any = {
             $or:[]
         }
