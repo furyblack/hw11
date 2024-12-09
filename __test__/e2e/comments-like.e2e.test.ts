@@ -39,8 +39,8 @@ let commentId: string
 
 describe('/comments', ()=> {
     jest.setTimeout(10000)
- //const mongoURI = 'mongodb+srv://miha:miha2016!@cluster0.expiegq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
-     const mongoURI = 'mongodb://localhost:27017'
+    const mongoURI = 'mongodb+srv://miha:miha2016!@cluster0.expiegq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
+     //const mongoURI = 'mongodb://localhost:27017'
     beforeAll(async () => {
 
         await mongoose.connect(mongoURI, {dbName: 'testLikes'}) //'testUser'

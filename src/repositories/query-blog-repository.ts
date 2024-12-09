@@ -5,7 +5,6 @@ import {BlogMapper} from "./blog-repository";
 import {PostOutputType} from "../types/posts/output";
 import {PostMapper} from "./post-repository";
 
-
 export class QueryBlogRepository {
 
     static async getById(id: string): Promise<BlogOutputType | null> {
