@@ -1,8 +1,4 @@
 import express, {Request, Response} from "express";
-import {
-    BlogModel, CommentModel, LikeModel, PostModel, RequestCountModel,
-    SessionModel, UserModel,
-} from "./db/db";
 import {postRoute} from "./routes/post-route";
 import {blogRoute} from "./routes/blog-route";
 import {usersRouter} from "./routes/users-router";
@@ -10,6 +6,13 @@ import {authRouter} from "./routes/auth-router";
 import {commentRouter} from "./routes/comment-router";
 import cookieParser from "cookie-parser";
 import {deviceRouter} from "./routes/device-router";
+import {BlogModel} from "./db/blogs-model";
+import {PostModel} from "./db/posts-model";
+import {UserModel} from "./db/user-model";
+import {SessionModel} from "./db/session-model";
+import {RequestCountModel} from "./db/requestcount-model";
+import {CommentModel} from "./db/comment-model";
+import {LikeModel} from "./db/likes-model";
 
 export const app = express();
 

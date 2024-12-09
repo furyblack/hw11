@@ -1,5 +1,5 @@
-import {LikeStatusEnum} from "../../db/db";
 import {CreateCommentServiceType} from "../../domain/comment-service";
+import {LikeStatusEnum} from "../../db/likes-model";
 
 export type CommentOutputType = {
     "id": string,

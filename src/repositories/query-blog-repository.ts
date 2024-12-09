@@ -1,9 +1,10 @@
 import {BlogMongoDbType, BlogOutputType, blogSortData, PaginationOutputType} from "../types/blogs/output";
 import {ObjectId, SortDirection, WithId} from "mongodb";
-import {BlogModel, PostModel} from "../db/db";
 import {BlogMapper} from "./blog-repository";
 import {PostOutputType} from "../types/posts/output";
 import {PostMapper} from "./post-repository";
+import {BlogModel} from "../db/blogs-model";
+import {PostModel} from "../db/posts-model";
 
 export class QueryBlogRepository {
 

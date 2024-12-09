@@ -1,7 +1,8 @@
 import {CommentDb} from "../types/comment/output-comment-type";
 import {CommentRepository} from "../repositories/comment-repository";
 import {PostRepository} from "../repositories/post-repository";
-import {CommentModel, LikeModel, LikeStatusEnum} from "../db/db";
+import {LikeModel, LikeStatusEnum} from "../db/likes-model";
+import {CommentModel} from "../db/comment-model";
 
 export type CreateCommentServiceType ={
     postId:string,

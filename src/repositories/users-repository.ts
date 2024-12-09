@@ -1,6 +1,6 @@
-import {UserModel} from "../db/db";
 import {UserAccountDBType} from "../types/users/inputUsersType";
 import {ObjectId, WithId} from "mongodb";
+import {UserModel} from "../db/user-model";
 
 export class UsersRepository{
 

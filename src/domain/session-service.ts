@@ -1,6 +1,6 @@
 import {SessionType, UpdateSessionType} from "../types/session/sessionType";
 import {SessionRepository} from "../repositories/session-repository";
-import {SessionModel} from "../db/db";
+import {SessionModel} from "../db/session-model";
 
 export class SessionService {
 

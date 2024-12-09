@@ -1,8 +1,8 @@
 import { PaginationOutputType} from "../types/blogs/output";
-import {UserModel} from "../db/db";
 import {ObjectId, SortDirection, WithId} from "mongodb";
 import {UserOutputType, userSortData} from "../types/users/outputUserType";
 import {UserAccountDBType} from "../types/users/inputUsersType";
+import {UserModel} from "../db/user-model";
 
 export class UserMapper {
     static toDto(user: WithId<UserAccountDBType>): UserOutputType {

@@ -1,5 +1,6 @@
 import {SessionType} from "../types/session/sessionType";
-import {SessionModel} from "../db/db";
+import {SessionModel} from "../db/session-model";
+
 
 
 export class SessionRepository{

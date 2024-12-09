@@ -1,9 +1,9 @@
-import {PostModel} from "../db/db";
 import {CreateNewPostType, UpdatePostType} from "../types/posts/input";
 import {PostMongoDbType, PostOutputType} from "../types/posts/output";
 import {QueryPostRepository} from "./query-post-repository";
 import {QueryBlogRepository} from "./query-blog-repository";
 import {ObjectId, WithId} from "mongodb";
+import {PostModel} from "../db/posts-model";
 
 export class PostMapper{
     static toDto(post:PostMongoDbType):PostOutputType{

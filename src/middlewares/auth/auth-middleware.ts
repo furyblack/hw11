@@ -1,10 +1,11 @@
 import { NextFunction, Response, Request } from 'express';
 import { jwtService } from "../../application/jwt-service";
 import { UsersRepository } from "../../repositories/users-repository";
-import {RequestCountModel, UserModel} from "../../db/db";
 import { body } from "express-validator";
 import { inputValidationMiddleware } from "../inputValidation/input-validation-middleware";
 import {SessionService} from "../../domain/session-service";
+import {UserModel} from "../../db/user-model";
+import {RequestCountModel} from "../../db/requestcount-model";
 
 
 // Middleware для базовой аутентификации

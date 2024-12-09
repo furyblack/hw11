@@ -1,7 +1,7 @@
-import {BlogModel} from "../db/db";
 import {UpdateBlogType} from "../types/blogs/input";
 import {BlogOutputType, BlogMongoDbType} from "../types/blogs/output";
 import {ObjectId, WithId} from "mongodb";
+import {BlogModel} from "../db/blogs-model";
 
 export class BlogMapper {
     static toDto(blog: WithId<BlogMongoDbType>): BlogOutputType {

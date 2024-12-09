@@ -4,9 +4,10 @@ import {authMiddlewareBearer} from "../middlewares/auth/auth-middleware";
 import {commentForPostValidation} from "../validators/post-validators";
 import {UpdateCommentType} from "../types/comment/input-comment-type";
 import {CommentRepository} from "../repositories/comment-repository";
-import {CommentModel, LikeModel} from "../db/db";
 import {CommentService} from "../domain/comment-service";
 import {extractUserIdFromToken} from "../middlewares/comments/comments-middleware";
+import {LikeModel} from "../db/likes-model";
+import {CommentModel} from "../db/comment-model";
 
 export const commentRouter= Router({})
 
