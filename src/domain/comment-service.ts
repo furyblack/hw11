@@ -1,9 +1,9 @@
-import {CommentMongoDbType} from "../types/comment/output-comment-type";
+import {CommentDb} from "../types/comment/output-comment-type";
 import {CommentRepository} from "../repositories/comment-repository";
 import {PostRepository} from "../repositories/post-repository";
 import {CommentModel, LikeModel, LikeStatusEnum} from "../db/db";
 
-type CreateCommentServiceType ={
+export type CreateCommentServiceType ={
     postId:string,
     content:string,
     userId:string,
@@ -15,20 +15,15 @@ export class CommentService{
 
         const post= await PostRepository.findPostById(postId)
         if(!post) return null
-        const newComment:CommentMongoDbType={
-            postId:postId,
-            content: content,
-            commentatorInfo: {
-                userId: userId,
-                userLogin: userLogin,
-            },
-            createdAt: new Date(),
-            likesInfo:{
-                likesCount: 0,
-                dislikesCount: 0,
-            }
-        }
-        return   await CommentRepository.createComment(newComment)
+
+        const newCommentForDB = new CommentDb({
+            content:content,
+            postId: postId,
+            userLogin: userLogin,
+            userId: userId
+        })
+
+        return await CommentRepository.createComment(newCommentForDB)
     }
 
     static async updateLikeStatus(commentId: string, userId: string, likeStatus: LikeStatusEnum): Promise<void> {

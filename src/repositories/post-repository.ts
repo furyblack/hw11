@@ -66,3 +66,5 @@ export class PostRepository{
         return PostModel.findOne({_id: new ObjectId(postId)})
     }
 }
+
+
