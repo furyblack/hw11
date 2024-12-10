@@ -27,6 +27,5 @@ export class PostService{
 
     static async deletePost(id: string): Promise<boolean>{
        return await PostRepository.deletePost(id)
-
     }
 }

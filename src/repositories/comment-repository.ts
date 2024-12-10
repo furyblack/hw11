@@ -1,9 +1,9 @@
-import {CommentMongoDbType, CommentOutputType} from "../types/comment/output-comment-type";
+import {CommentOutputType} from "../types/comment/output-comment-type";
 import {ObjectId, WithId} from "mongodb";
 import {UpdateCommentType} from "../types/comment/input-comment-type";
 import {QueryCommentRepository} from "./query-comment-repository";
 import {LikeStatusEnum} from "../db/likes-model";
-import {CommentModel} from "../db/comment-model";
+import {CommentModel, CommentMongoDbType} from "../db/comment-model";
 
 export class CommentMapper {
     static toDto(comment: WithId<CommentMongoDbType>, likeStatus:LikeStatusEnum = LikeStatusEnum.NONE): CommentOutputType {

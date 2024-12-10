@@ -1,7 +1,7 @@
 import {ObjectId, WithId} from "mongodb";
-import {CommentMongoDbType, CommentOutputType} from "../types/comment/output-comment-type";
+import {CommentOutputType} from "../types/comment/output-comment-type";
 import {CommentMapper} from "./comment-repository";
-import {CommentModel} from "../db/comment-model";
+import {CommentModel, CommentMongoDbType} from "../db/comment-model";
 import {LikeModel, LikeStatusEnum} from "../db/likes-model";
 
 export class QueryCommentRepository {

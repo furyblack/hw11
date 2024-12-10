@@ -1,5 +1,4 @@
 import * as dotenv from "dotenv";
-
 //пытаюсь подключить бд
 import mongoose from "mongoose";
 
