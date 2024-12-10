@@ -17,7 +17,6 @@ export class BlogMapper {
     }
 }
 
-
 export class BlogRepository {
 
     static async createBlog(blog: BlogMongoDbType): Promise<string> {
@@ -27,7 +26,6 @@ export class BlogRepository {
     }
 
     static async updateBlog(blogId: string, updateData: UpdateBlogType): Promise<boolean> {
-
         const updateResult = await BlogModel.updateOne({_id: new ObjectId(blogId)}, {$set: {...updateData}})
         const updatedCount = updateResult.modifiedCount
         return !!updatedCount;
@@ -43,6 +41,5 @@ export class BlogRepository {
             return false;
         }
     }
-
 }
 

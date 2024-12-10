@@ -61,6 +61,7 @@ blogRoute.get('/:blogId/posts', async (req: RequestWithQueryAndParams<{
 
 blogRoute.post('/', authMiddleware, blogValidation(), async (req: RequestWithBody<CreateNewBlogType>, res: Response<BlogOutputType>) => {
     const {name, description, websiteUrl}: CreateNewBlogType = req.body
+        //TODO возвращаем блог айди и по нему идем в квери репу
     const newBlog = await BlogsService.createBlog({name, description, websiteUrl})
 
     res.status(201).send(newBlog)

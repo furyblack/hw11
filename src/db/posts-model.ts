@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
-import {PostMongoDbType} from "../types/posts/output";
+import {PostCreateType, PostMongoDbType} from "../types/posts/output";
+import {ObjectId} from "mongodb";
 
 
 //СХЕМА И МОДЕЛЬ ПОСТОВ
@@ -12,3 +13,24 @@ export const postSchema = new mongoose.Schema({
     createdAt: {type: Date, required: true},
 })
 export const PostModel = mongoose.model<PostMongoDbType>('posts', postSchema)
+
+
+export class PostDb{
+    public _id: ObjectId
+    public  title: string
+    public shortDescription: string
+    public content: string
+    public blogId: string
+    public blogName: string
+    public createdAt: Date
+
+    constructor(data:PostCreateType) {
+        this._id = data._id
+        this.title = data.title
+        this.shortDescription = data.shortDescription
+        this.content = data.content
+        this.blogId = data.blogId
+        this.blogName = data.blogName
+        this.createdAt = new Date()
+    }
+}

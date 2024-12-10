@@ -1,14 +1,4 @@
-export class BlogOutputClass{
-    constructor(
-    public id: string,
-    public name: string,
-    public description: string,
-    public websiteUrl: string,
-    public isMembership: boolean,
-    public createdAt: string
-    ) {
-    }
-}
+import {CreateNewBlogType} from "./input";
 
 export type BlogOutputType =  {
     "id": string,
@@ -18,14 +8,20 @@ export type BlogOutputType =  {
     "isMembership": boolean,
     "createdAt": string
 }
-export class BlogMongoDbType  {
-    createdAt:Date
-    constructor(
-  public  name: string,
-  public description: string,
-  public websiteUrl: string,
-    ) {
+
+//TODO переименовать в BlogDB
+export  class  BlogMongoDbType{
+    public name: string
+    public description: string
+    public websiteUrl: string
+    public createdAt: Date
+
+    constructor(data:CreateNewBlogType) {
+        this.name = data.name
+        this.description = data.description
+        this.websiteUrl = data.websiteUrl
         this.createdAt = new Date()
+
     }
 }
 

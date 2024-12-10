@@ -14,6 +14,7 @@ import {CommentService} from "../domain/comment-service";
 import {QueryCommentRepository} from "../repositories/query-comment-repository";
 import {ObjectId} from "mongodb";
 import {extractUserIdFromToken} from "../middlewares/comments/comments-middleware";
+import {PostService} from "../domain/posts-service";
 
 export const postRoute = Router({})
 
@@ -65,7 +66,7 @@ postRoute.get('/:postId/comments', extractUserIdFromToken, async (req:RequestWit
 
 postRoute.post('/', authMiddleware, postValidation(), async (req: RequestWithBody<CreateNewPostType>, res: Response<PostOutputType>) => {
     const  {title, shortDescription, content, blogId}:CreateNewPostType = req.body
-    const addResult = await PostRepository.createPost({title, shortDescription, content, blogId })
+    const addResult = await PostService.createPost({title, shortDescription, content, blogId })
     if(!addResult){
         res.sendStatus(404)
         return
@@ -97,7 +98,7 @@ postRoute.put('/:id', authMiddleware, postValidation(), async (req:Request, res:
     }
     const postId = req.params.id
 
-    const isUpdated = await PostRepository.updatePost(postId, postUpdateParams)
+    const isUpdated = await PostService.updatePost(postId, postUpdateParams)
     if (isUpdated) {
         return res.sendStatus(204)
     }else{
@@ -107,7 +108,7 @@ postRoute.put('/:id', authMiddleware, postValidation(), async (req:Request, res:
 })
 
 postRoute.delete('/:id',  authMiddleware, async  (req:Request, res:Response) => {
-    const isDeleted = await PostRepository.deletePost(req.params.id)
+    const isDeleted = await PostService.deletePost(req.params.id)
     if (!isDeleted){
         res.sendStatus(404)
     }else{

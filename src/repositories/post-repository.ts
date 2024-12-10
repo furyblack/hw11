@@ -3,7 +3,7 @@ import {PostMongoDbType, PostOutputType} from "../types/posts/output";
 import {QueryPostRepository} from "./query-post-repository";
 import {QueryBlogRepository} from "./query-blog-repository";
 import {ObjectId, WithId} from "mongodb";
-import {PostModel} from "../db/posts-model";
+import {PostDb, PostModel} from "../db/posts-model";
 
 export class PostMapper{
     static toDto(post:PostMongoDbType):PostOutputType{
@@ -25,15 +25,15 @@ export class PostRepository{
         if (!targetBlog){
             return null
         }
-        const newPost:PostMongoDbType ={
-            _id: new ObjectId(),
-            title: postParams.title,
-            shortDescription: postParams.shortDescription,
-            content: postParams.content,
-            blogId: postParams.blogId,
-            blogName: targetBlog.name,
-            createdAt: new Date()
-        } as unknown as PostMongoDbType
+        const  newPost = new PostDb({
+                _id: new ObjectId(),
+                title: postParams.title,
+                shortDescription: postParams.shortDescription,
+                content: postParams.content,
+                blogId: postParams.blogId,
+                blogName: targetBlog.name,
+        })
+
 
         const newPostToDb = new PostModel(newPost)
         await newPostToDb.save()
