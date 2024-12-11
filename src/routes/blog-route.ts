@@ -12,6 +12,7 @@ import {QueryBlogRepository} from "../repositories/query-blog-repository";
 import {paginator} from "../types/paginator/pagination";
 import {postForBlogValidation} from "../validators/post-validators";
 import {CreateNewPostForBlogType} from "../types/posts/input";
+import {PostService} from "../domain/posts-service";
 
 
 export const blogRoute = Router({});
@@ -77,7 +78,7 @@ blogRoute.post('/:blogId/posts', authMiddleware, postForBlogValidation(), async 
     // Извлекаем параметры и тело запроса из запроса
     const {blogId} = req.params;
     const {title, shortDescription, content} = req.body;
-    const newPost = await BlogsService.createPostToBlog({title, shortDescription, content, blogId})
+    const newPost = await PostService.createPost({title, shortDescription, content, blogId})
     // Отправляем успешный ответ с созданным постом
     if (!newPost) return res.sendStatus(404)
     res.status(201).send(newPost);
