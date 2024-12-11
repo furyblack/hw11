@@ -1,10 +1,10 @@
 import {UpdateBlogType} from "../types/blogs/input";
-import {BlogOutputType, BlogMongoDbType} from "../types/blogs/output";
+import {BlogOutputType} from "../types/blogs/output";
 import {ObjectId, WithId} from "mongodb";
-import {BlogModel} from "../db/blogs-model";
+import {BlogDb, BlogModel} from "../db/blogs-model";
 
 export class BlogMapper {
-    static toDto(blog: WithId<BlogMongoDbType>): BlogOutputType {
+    static toDto(blog: WithId<BlogDb>): BlogOutputType {
         console.log(blog)
         return {
             id: blog._id.toString(),
@@ -19,7 +19,7 @@ export class BlogMapper {
 
 export class BlogRepository {
 
-    static async createBlog(blog: BlogMongoDbType): Promise<string> {
+    static async createBlog(blog: BlogDb): Promise<string> {
         const newBlogToDb = new BlogModel(blog)
         await newBlogToDb.save()
         return newBlogToDb._id.toString()

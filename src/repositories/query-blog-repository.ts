@@ -1,15 +1,15 @@
-import {BlogMongoDbType, BlogOutputType, blogSortData, PaginationOutputType} from "../types/blogs/output";
+import { BlogOutputType, blogSortData, PaginationOutputType} from "../types/blogs/output";
 import {ObjectId, SortDirection, WithId} from "mongodb";
 import {BlogMapper} from "./blog-repository";
 import {PostOutputType} from "../types/posts/output";
 import {PostMapper} from "./post-repository";
-import {BlogModel} from "../db/blogs-model";
+import {BlogDb, BlogModel} from "../db/blogs-model";
 import {PostModel} from "../db/posts-model";
 
 export class QueryBlogRepository {
 
     static async getById(id: string): Promise<BlogOutputType | null> {
-        const blog: WithId<BlogMongoDbType> | null = await BlogModel.findOne({_id: new ObjectId(id)})
+        const blog: WithId<BlogDb> | null = await BlogModel.findOne({_id: new ObjectId(id)})
         if (!blog) {
             return null
         }

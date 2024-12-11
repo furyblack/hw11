@@ -2,6 +2,7 @@ import {CreateNewPostType, UpdatePostType} from "../types/posts/input";
 import {PostMongoDbType, PostOutputType} from "../types/posts/output";
 import {ObjectId, WithId} from "mongodb";
 import {PostModel} from "../db/posts-model";
+import {PostService} from "../domain/posts-service";
 
 export class PostMapper{
     static toDto(post:PostMongoDbType):PostOutputType{
@@ -20,15 +21,15 @@ export class PostMapper{
 export class PostRepository{
 
     static async createPost(postParams: CreateNewPostType): Promise<PostOutputType | null>{
-        return await PostRepository.createPost(postParams)
+        return await PostService.createPost(postParams)
     }
 
     static async  updatePost(postId: string,  updateData:UpdatePostType): Promise<boolean | null>{
-        return  await PostRepository.updatePost(postId, updateData)
+        return  await PostService.updatePost(postId, updateData)
     }
 
     static async deletePost(id: string): Promise<boolean>{
-        return await PostRepository.deletePost(id)
+        return await PostService.deletePost(id)
     }
 
     static async findPostById(postId:string):Promise<WithId<PostMongoDbType>|null>{

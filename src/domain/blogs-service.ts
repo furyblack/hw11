@@ -3,10 +3,10 @@ import {PostRepository} from "../repositories/post-repository";
 import {CreateNewPostType} from "../types/posts/input";
 import {BlogRepository} from "../repositories/blog-repository";
 import {CreateNewBlogType} from "../types/blogs/input";
-import {BlogMongoDbType} from "../types/blogs/output";
 import {QueryBlogRepository} from "../repositories/query-blog-repository";
 import {PostDb} from "../db/posts-model";
 import {ObjectId} from "mongodb";
+import {BlogDb} from "../db/blogs-model";
 
 export class BlogsService {
 
@@ -33,7 +33,7 @@ export class BlogsService {
 
     //переносим часть функционала  с blog route ( создание блога)
     static async createBlog(data: CreateNewBlogType) {
-        const newBlogData = new BlogMongoDbType(data)
+        const newBlogData = new BlogDb(data)
         const newBlogId: string = await BlogRepository.createBlog(newBlogData)
         //TODO возвращшаем блог айди
         const  createdBlog = await QueryBlogRepository.getById(newBlogId)

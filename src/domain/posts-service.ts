@@ -36,6 +36,7 @@ export class PostService{
         const newPostToDb = new PostModel(newPost)
         await newPostToDb.save()
         return PostMapper.toDto({...newPost, _id:newPostToDb._id})
+
     }
 
     static async  updatePost(postId: string,  updateData:UpdatePostType): Promise<boolean | null>{
