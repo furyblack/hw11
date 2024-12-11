@@ -18,6 +18,10 @@ import {PostService} from "../domain/posts-service";
 
 export const postRoute = Router({})
 
+
+// class PostController{
+//     async getPosts(req: RequestWithQuery<postQuerySortData>, res: Response<PaginationOutputType<PostOutputType[]>> )
+// }
 postRoute.get('/', async (req: RequestWithQuery<postQuerySortData>, res: Response<PaginationOutputType<PostOutputType[]>> ) =>{
     const paginationData = paginator(req.query)
     const posts=  await QueryPostRepository.getAll(paginationData)
