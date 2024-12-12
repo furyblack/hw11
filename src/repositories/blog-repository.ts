@@ -19,20 +19,20 @@ export class BlogMapper {
 
 export class BlogRepository {
 
-    static async createBlog(blog: BlogDb): Promise<string> {
+     async createBlog(blog: BlogDb): Promise<string> {
         const newBlogToDb = new BlogModel(blog)
         await newBlogToDb.save()
         return newBlogToDb._id.toString()
     }
 
-    static async updateBlog(blogId: string, updateData: UpdateBlogType): Promise<boolean> {
+     async updateBlog(blogId: string, updateData: UpdateBlogType): Promise<boolean> {
         const updateResult = await BlogModel.updateOne({_id: new ObjectId(blogId)}, {$set: {...updateData}})
         const updatedCount = updateResult.modifiedCount
         return !!updatedCount;
 
     }
 
-    static async deleteBlog(id: string): Promise<boolean> {
+     async deleteBlog(id: string): Promise<boolean> {
         try {
             const result = await BlogModel.deleteOne({_id: new ObjectId(id)});
             return result.deletedCount === 1;
@@ -43,3 +43,4 @@ export class BlogRepository {
     }
 }
 
+export const blogRepo = new BlogRepository()

@@ -1,6 +1,6 @@
 import {CreateNewPostType, UpdatePostType} from "../types/posts/input";
 import {PostMongoDbType, PostOutputType} from "../types/posts/output";
-import {QueryBlogRepository} from "../repositories/query-blog-repository";
+import {queryBlogRepo} from "../repositories/query-blog-repository";
 import {PostDb, PostModel} from "../db/posts-model";
 import {ObjectId} from "mongodb";
 import {queryPostRepo} from "../repositories/query-post-repository";
@@ -21,7 +21,7 @@ export class PostMapper{
 export class PostService{
 
      async createPost(postParams: CreateNewPostType): Promise<PostOutputType | null>{
-        const targetBlog = await QueryBlogRepository.getById(postParams.blogId)
+        const targetBlog = await queryBlogRepo.getById(postParams.blogId)
         if (!targetBlog){
             return null
         }

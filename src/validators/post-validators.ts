@@ -1,6 +1,6 @@
 import {inputValidationMiddleware} from "../middlewares/inputValidation/input-validation-middleware";
 import {body} from "express-validator";
-import {QueryBlogRepository} from "../repositories/query-blog-repository";
+import {queryBlogRepo} from "../repositories/query-blog-repository";
 
 const titleValidator = body('title').isString().trim().isLength({
     min: 1,
@@ -23,7 +23,7 @@ const commentValidator = body('content').isString().withMessage('content must be
 })
 
 export const postIdValidator = body('blogId').isString().custom  (async (value:string) => {
-    const blog = await QueryBlogRepository.getById(value);
+    const blog = await queryBlogRepo.getById(value);
     console.log(blog)
     if (!blog){
         throw Error ('Incorrect postId')

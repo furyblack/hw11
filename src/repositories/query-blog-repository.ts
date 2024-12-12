@@ -8,7 +8,7 @@ import {PostModel} from "../db/posts-model";
 
 export class QueryBlogRepository {
 
-    static async getById(id: string): Promise<BlogOutputType | null> {
+     async getById(id: string): Promise<BlogOutputType | null> {
         const blog: WithId<BlogDb> | null = await BlogModel.findOne({_id: new ObjectId(id)})
         if (!blog) {
             return null
@@ -17,7 +17,7 @@ export class QueryBlogRepository {
     }
 
 
-    static async getAllPostsForBlog(blogId: string,sortData: blogSortData): Promise<PaginationOutputType<PostOutputType[]>> {
+     async getAllPostsForBlog(blogId: string,sortData: blogSortData): Promise<PaginationOutputType<PostOutputType[]>> {
         const {pageSize, pageNumber, sortBy, sortDirection, searchNameTerm} = sortData
         const search = {blogId: blogId}
         const blog = await PostModel
@@ -40,7 +40,7 @@ export class QueryBlogRepository {
 
     }
 
-    static async getAll(sortData: blogSortData): Promise<PaginationOutputType<BlogOutputType[]>> {
+     async getAll(sortData: blogSortData): Promise<PaginationOutputType<BlogOutputType[]>> {
         const {pageSize, pageNumber, sortBy, sortDirection, searchNameTerm} = sortData
         const search = searchNameTerm
             ? {name: {$regex: searchNameTerm, $options: 'i'}}
@@ -65,5 +65,6 @@ export class QueryBlogRepository {
 
     }
 }
+export const queryBlogRepo = new QueryBlogRepository()
 
 
