@@ -1,5 +1,5 @@
 import { Response, Request, Router } from "express";
-import { UsersService } from "../domain/users-service";
+import {userService} from "../domain/users-service";
 import { RequestWithBody } from "../types/common";
 import { LoginUserType, UserAccountDBType } from "../types/users/inputUsersType";
 import { jwtService } from "../application/jwt-service";
@@ -22,7 +22,7 @@ export const authRouter = Router({});
 authRouter.post('/login', loginzationValidation(), rateLimiterMiddlewave, async (req: RequestWithBody<LoginUserType>, res: Response) => {
 
     // Проверяем учетные данные пользователя
-    const user: WithId<UserAccountDBType> | null = await UsersService.checkCredentials(req.body.loginOrEmail, req.body.password);
+    const user: WithId<UserAccountDBType> | null = await userService.checkCredentials(req.body.loginOrEmail, req.body.password);
     if (!user) {
         res.sendStatus(401); // Если пользователь не найден, возвращаем 401 (Unauthorized)
         return;
@@ -81,7 +81,7 @@ authRouter.get('/me', authMiddlewareBearer, async (req: Request, res: Response<C
 // Endpoint для регистрации нового пользователя
 authRouter.post('/registration', rateLimiterMiddlewave, registrationValidation(),  async (req: Request, res: Response) => {
     // Создаем нового неподтвержденного пользователя
-    const result = await UsersService.createUnconfirmedUser(req.body.login, req.body.email, req.body.password);
+    const result = await userService.createUnconfirmedUser(req.body.login, req.body.email, req.body.password);
     if (!result) {
         res.sendStatus(500); // Если произошла ошибка, возвращаем 500 (Internal Server Error)
         return;
@@ -91,7 +91,7 @@ authRouter.post('/registration', rateLimiterMiddlewave, registrationValidation()
 
 // Endpoint для подтверждения регистрации по коду
 authRouter.post('/registration-confirmation', rateLimiterMiddlewave, async (req: Request, res: Response) => {
-    const result = await UsersService.confirmEmail(req.body.code);
+    const result = await userService.confirmEmail(req.body.code);
     if (!result) {
         res.status(400).send({ errorsMessages: [{ message: 'пользователь уже подтвержден', field: "code" }] });
         return;
@@ -102,13 +102,13 @@ authRouter.post('/registration-confirmation', rateLimiterMiddlewave, async (req:
 // Endpoint для повторной отправки письма с подтверждением
 authRouter.post('/registration-email-resending', rateLimiterMiddlewave, emailResendingValidation(),  async (req: Request, res: Response) => {
     const email = req.body.email;
-    await UsersService.resendConfirmationEmail(email);
+    await userService.resendConfirmationEmail(email);
     res.sendStatus(204); // No Content
 });
 
 authRouter.post('/password-recovery', rateLimiterMiddlewave, emailValidator, inputValidationMiddleware, async (req: Request, res: Response) =>{
     const { email } = req.body;
-    const result = await UsersService.initiatePasswordRecovery(email);
+    const result = await userService.initiatePasswordRecovery(email);
     if (!result) {
         res.status(400).send({ errorsMessages: [{ message: 'Invalid email', field: "email" }] });
         return;
@@ -120,7 +120,7 @@ authRouter.post('/new-password', rateLimiterMiddlewave, passwordRecoveryValidati
     newPassword: string, recoveryCode: string
 }>, res: Response)=>{
     const { newPassword, recoveryCode } = req.body;
-    const result = await UsersService.confirmPasswordRecovery(newPassword, recoveryCode)
+    const result = await userService.confirmPasswordRecovery(newPassword, recoveryCode)
 
     if(!result){
         res.status(400).send({errorsMessages: [{message:'invalid recovery code or recovery code has expired', field:'recoveryCode'}]})

@@ -1,6 +1,6 @@
 import {NextFunction, Request, Response} from "express";
 import {jwtService} from "../../application/jwt-service";
-import {UsersRepository} from "../../repositories/users-repository";
+import {userRepo} from "../../repositories/users-repository";
 
 
 export const extractUserIdFromToken = async  (req: Request, res: Response, next: NextFunction) => {
@@ -13,7 +13,7 @@ export const extractUserIdFromToken = async  (req: Request, res: Response, next:
     // Получаем ID пользователя по токену
     const userId = await jwtService.getUserIdByToken(token);
     // Ищем пользователя в базе данных
-    const user = await UsersRepository.findUserById(userId);
+    const user = await userRepo.findUserById(userId);
     if (user) {
         req.userDto = user; // Добавляем пользователя в объект запроса
         next(); // Передаем управление следующему middleware

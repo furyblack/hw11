@@ -16,7 +16,7 @@ export class UserMapper {
 }
 
 export class UserQueryRepository {
-    static async getAll(sortData: userSortData): Promise<PaginationOutputType<UserOutputType[]>> {
+     async getAll(sortData: userSortData): Promise<PaginationOutputType<UserOutputType[]>> {
         let {pageSize, pageNumber, sortBy, sortDirection } = sortData
         let filter:any = {
             $or:[]
@@ -53,8 +53,9 @@ export class UserQueryRepository {
             items: user.map(u => UserMapper.toDto(u))
         }
     }
-    static async getById(id:string  ):Promise<UserOutputType | null>{
+     async getById(id:string  ):Promise<UserOutputType | null>{
         const currentUser= await UserModel.findOne({_id:new ObjectId(id)})
         return currentUser? UserMapper.toDto(currentUser): null
     }
 }
+export const queryUserRepo = new UserQueryRepository()

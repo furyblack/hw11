@@ -1,6 +1,6 @@
 import { NextFunction, Response, Request } from 'express';
 import { jwtService } from "../../application/jwt-service";
-import { UsersRepository } from "../../repositories/users-repository";
+import {userRepo} from "../../repositories/users-repository";
 import { body } from "express-validator";
 import { inputValidationMiddleware } from "../inputValidation/input-validation-middleware";
 import {SessionService} from "../../domain/session-service";
@@ -30,7 +30,7 @@ export const authMiddlewareBearer = async (req: Request, res: Response, next: Ne
     // Получаем ID пользователя по токену
     const userId = await jwtService.getUserIdByToken(token);
     // Ищем пользователя в базе данных
-    const user = await UsersRepository.findUserById(userId);
+    const user = await userRepo.findUserById(userId);
     if (user) {
         req.userDto = user; // Добавляем пользователя в объект запроса
         next(); // Передаем управление следующему middleware
@@ -115,7 +115,7 @@ export const authMiddlewareRefresh = async (req: Request, res: Response, next: N
         const lastActiveDate  = new Date(payload.iat! * 1000);// доставать не только юзер ай ди но и девайс айди и iat
 
         // Ищем пользователя в базе данных
-        const user = await UsersRepository.findUserById(payload.userId);
+        const user = await userRepo.findUserById(payload.userId);
         //найти сессию и проверить что ласт эктив дейт  = iat
         const session = await SessionService.findSessionByDeviceId(payload.deviceId)
 
