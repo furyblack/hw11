@@ -1,4 +1,4 @@
-import {CommentRepository} from "../repositories/comment-repository";
+import {commentRepo} from "../repositories/comment-repository";
 import {PostRepository} from "../repositories/post-repository";
 import {LikeModel, LikeStatusEnum} from "../db/likes-model";
 import {CommentDb, CommentModel} from "../db/comment-model";
@@ -10,7 +10,7 @@ export type CreateCommentServiceType ={
     userLogin:string,
 }
 export class CommentService{
-    static async createComment(data: CreateCommentServiceType):Promise<{commentId:string}|null>{
+     async createComment(data: CreateCommentServiceType):Promise<{commentId:string}|null>{
         const {postId,content,userLogin,userId} = data
 
         const post= await PostRepository.findPostById(postId)
@@ -23,10 +23,10 @@ export class CommentService{
             userId: userId
         })
 
-        return await CommentRepository.createComment(newCommentForDB)
+        return await commentRepo.createComment(newCommentForDB)
     }
 
-    static async updateLikeStatus(commentId: string, userId: string, likeStatus: LikeStatusEnum): Promise<void> {
+     async updateLikeStatus(commentId: string, userId: string, likeStatus: LikeStatusEnum): Promise<void> {
         const existingLike = await LikeModel.findOne({ commentId, userId });
 
         if (likeStatus === LikeStatusEnum.NONE) {
@@ -55,3 +55,5 @@ const updateCommentLikeCounts = async (commentId:string)=>{
         'likesInfo.dislikesCount':dislikesCount,
     })
 }
+
+export const commentService = new CommentService()

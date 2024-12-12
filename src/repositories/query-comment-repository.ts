@@ -6,7 +6,7 @@ import {LikeModel, LikeStatusEnum} from "../db/likes-model";
 
 export class QueryCommentRepository {
 
-    static async getById(id: string, userId?:string): Promise<CommentOutputType | null> {
+     async getById(id: string, userId?:string): Promise<CommentOutputType | null> {
         const comment: WithId<CommentMongoDbType> | null = await CommentModel.findOne({_id: new ObjectId(id)})
         if (!comment) {
             return null
@@ -22,3 +22,5 @@ export class QueryCommentRepository {
         return CommentMapper.toDto(comment, likeStatus)
     }
 }
+
+export const queryCommentRepo = new QueryCommentRepository()

@@ -10,8 +10,8 @@ import {paginator} from "../types/paginator/pagination";
 import {PaginationOutputType} from "../types/blogs/output";
 import {CommentOutputType} from "../types/comment/output-comment-type";
 import {CreateNewCommentType} from "../types/comment/input-comment-type";
-import {CommentService} from "../domain/comment-service";
-import {QueryCommentRepository} from "../repositories/query-comment-repository";
+import {commentService} from "../domain/comment-service";
+import {queryCommentRepo} from "../repositories/query-comment-repository";
 import {ObjectId} from "mongodb";
 import {extractUserIdFromToken} from "../middlewares/comments/comments-middleware";
 import {PostService} from "../domain/posts-service";
@@ -84,11 +84,11 @@ class PostController {
         const content = req.body.content;
         const userId = req.userDto._id.toString();
         const userLogin = req.userDto.accountData.userName;
-        const createResult = await CommentService.createComment({content, postId, userId, userLogin})
+        const createResult = await commentService.createComment({content, postId, userId, userLogin})
         //если поста нет то 404
         if (!createResult) return res.sendStatus(404)
 
-        const createdComment = await QueryCommentRepository.getById(createResult.commentId)
+        const createdComment = await queryCommentRepo.getById(createResult.commentId)
 
         return res.status(201).send(createdComment!)
     }

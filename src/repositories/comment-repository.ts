@@ -1,7 +1,7 @@
 import {CommentOutputType} from "../types/comment/output-comment-type";
 import {ObjectId, WithId} from "mongodb";
 import {UpdateCommentType} from "../types/comment/input-comment-type";
-import {QueryCommentRepository} from "./query-comment-repository";
+import {queryCommentRepo} from "./query-comment-repository";
 import {LikeStatusEnum} from "../db/likes-model";
 import {CommentModel, CommentMongoDbType} from "../db/comment-model";
 
@@ -22,12 +22,12 @@ export class CommentMapper {
 }
 
 export class CommentRepository {
-    static async findById(commentId: string):Promise<WithId<CommentMongoDbType> | null>{
+     async findById(commentId: string):Promise<WithId<CommentMongoDbType> | null>{
 
         return  CommentModel.findOne({_id: new ObjectId(commentId)})
     }
 
-    static async createComment(commentParams:CommentMongoDbType):Promise<{commentId: string}>{
+     async createComment(commentParams:CommentMongoDbType):Promise<{commentId: string}>{
 
         const cteatedCommentData  = await CommentModel.create(commentParams)
         return {
@@ -35,8 +35,8 @@ export class CommentRepository {
         }
     }
 
-    static  async updateComment(commentId: string, updateData:UpdateCommentType):Promise<boolean|null>{
-        const post = await QueryCommentRepository.getById(commentId)
+      async updateComment(commentId: string, updateData:UpdateCommentType):Promise<boolean|null>{
+        const post = await queryCommentRepo.getById(commentId)
         if(!post){
             return null
         }
@@ -45,7 +45,7 @@ export class CommentRepository {
         return !!updatedCount;
     }
 
-    static async deleteComment(id:string):Promise<boolean>{
+     async deleteComment(id:string):Promise<boolean>{
         try {
             const result = await CommentModel.deleteOne({_id: new ObjectId(id)})
             return result.deletedCount===1;
@@ -55,4 +55,6 @@ export class CommentRepository {
         }
     }
 }
+
+export const commentRepo = new CommentRepository()
 
