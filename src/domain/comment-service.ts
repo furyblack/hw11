@@ -1,5 +1,5 @@
 import {commentRepo} from "../repositories/comment-repository";
-import {PostRepository} from "../repositories/post-repository";
+import {postRepo} from "../repositories/post-repository";
 import {LikeModel, LikeStatusEnum} from "../db/likes-model";
 import {CommentDb, CommentModel} from "../db/comment-model";
 
@@ -13,7 +13,7 @@ export class CommentService{
      async createComment(data: CreateCommentServiceType):Promise<{commentId:string}|null>{
         const {postId,content,userLogin,userId} = data
 
-        const post= await PostRepository.findPostById(postId)
+        const post= await postRepo.findPostById(postId)
         if(!post) return null
 
         const newCommentForDB = new CommentDb({

@@ -9,8 +9,7 @@ import {LikeModel, LikeStatusEnum} from "../db/likes-model";
 
 export class QueryPostRepository {
 
-
-    static async getAll(sortData: postSortData): Promise<PaginationOutputType<PostOutputType[]>> {
+     async getAll(sortData: postSortData): Promise<PaginationOutputType<PostOutputType[]>> {
         const { pageSize, pageNumber, sortBy, sortDirection, searchNameTerm } = sortData;
         const search = searchNameTerm
             ? { title: { $regex: searchNameTerm, $options: 'i' } }
@@ -33,7 +32,7 @@ export class QueryPostRepository {
     }
 
 
-    static async getAllCommentsForPost(postId: string, sortData: postSortData, userId: string | null): Promise<PaginationOutputType<CommentOutputType[]>> {
+     async getAllCommentsForPost(postId: string, sortData: postSortData, userId: string | null): Promise<PaginationOutputType<CommentOutputType[]>> {
         const { pageSize, pageNumber, sortBy, sortDirection } = sortData;
         const search = { postId: postId };
 
@@ -99,7 +98,7 @@ export class QueryPostRepository {
     }
 
 
-    static async getById(id: string): Promise<PostOutputType | null> {
+     async getById(id: string): Promise<PostOutputType | null> {
         const post: PostMongoDbType | null = await PostModel.findOne({ _id: new ObjectId(id) });
         if (!post) {
             return null;
@@ -107,3 +106,5 @@ export class QueryPostRepository {
         return PostMapper.toDto(post);
     }
 }
+
+export const queryPostRepo = new QueryPostRepository()

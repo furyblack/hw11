@@ -3,9 +3,9 @@ import {RequestWithBody, RequestWithParamsAndBody, RequestWithQuery, RequestWith
 import {Request, Response, Router} from "express";
 import {PostOutputType} from "../types/posts/output";
 import {CreateNewPostType, postQuerySortData, UpdatePostType} from "../types/posts/input";
-import {PostRepository} from "../repositories/post-repository";
+import {postRepo} from "../repositories/post-repository";
 import {commentForPostValidation, postValidation} from "../validators/post-validators";
-import {QueryPostRepository} from "../repositories/query-post-repository";
+import {queryPostRepo} from "../repositories/query-post-repository";
 import {paginator} from "../types/paginator/pagination";
 import {PaginationOutputType} from "../types/blogs/output";
 import {CommentOutputType} from "../types/comment/output-comment-type";
@@ -14,19 +14,19 @@ import {commentService} from "../domain/comment-service";
 import {queryCommentRepo} from "../repositories/query-comment-repository";
 import {ObjectId} from "mongodb";
 import {extractUserIdFromToken} from "../middlewares/comments/comments-middleware";
-import {PostService} from "../domain/posts-service";
+import {postService} from "../domain/posts-service";
 
 export const postRoute = Router({})
 
 class PostController {
     async getPosts(req: RequestWithQuery<postQuerySortData>, res: Response<PaginationOutputType<PostOutputType[]>>) {
         const paginationData = paginator(req.query)
-        const posts = await QueryPostRepository.getAll(paginationData)
+        const posts = await queryPostRepo.getAll(paginationData)
         res.send(posts)
     }
 
     async getPostById(req: Request, res: Response) {
-        const postId = await QueryPostRepository.getById(req.params.id)
+        const postId = await queryPostRepo.getById(req.params.id)
         if (postId) {
             res.status(200).send(postId)
         } else {
@@ -44,7 +44,7 @@ class PostController {
             res.sendStatus(404)
             return
         }
-        const foundPost = await PostRepository.findPostById(postId)
+        const foundPost = await postRepo.findPostById(postId)
         if (!foundPost) {
             res.sendStatus(404)
             /**
@@ -56,7 +56,7 @@ class PostController {
             return
         }
         try {
-            const comments = await QueryPostRepository.getAllCommentsForPost(postId, paginationData, userId)
+            const comments = await queryPostRepo.getAllCommentsForPost(postId, paginationData, userId)
             res.status(200).send(comments)
             return
         } catch (error) {
@@ -68,7 +68,7 @@ class PostController {
 
     async createPost(req: RequestWithBody<CreateNewPostType>, res: Response<PostOutputType>) {
         const {title, shortDescription, content, blogId}: CreateNewPostType = req.body
-        const addResult = await PostService.createPost({title, shortDescription, content, blogId})
+        const addResult = await postService.createPost({title, shortDescription, content, blogId})
         if (!addResult) {
             res.sendStatus(404)
             return
@@ -101,7 +101,7 @@ class PostController {
         }
         const postId = req.params.id
 
-        const isUpdated = await PostService.updatePost(postId, postUpdateParams)
+        const isUpdated = await postService.updatePost(postId, postUpdateParams)
         if (isUpdated) {
             return res.sendStatus(204)
         } else {
@@ -111,7 +111,7 @@ class PostController {
     }
 
     async deletePost(req: Request, res: Response) {
-        const isDeleted = await PostService.deletePost(req.params.id)
+        const isDeleted = await postService.deletePost(req.params.id)
         if (!isDeleted) {
             res.sendStatus(404)
         } else {

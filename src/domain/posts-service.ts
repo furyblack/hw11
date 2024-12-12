@@ -3,7 +3,7 @@ import {PostMongoDbType, PostOutputType} from "../types/posts/output";
 import {QueryBlogRepository} from "../repositories/query-blog-repository";
 import {PostDb, PostModel} from "../db/posts-model";
 import {ObjectId} from "mongodb";
-import {QueryPostRepository} from "../repositories/query-post-repository";
+import {queryPostRepo} from "../repositories/query-post-repository";
 
 export class PostMapper{
     static toDto(post:PostMongoDbType):PostOutputType{
@@ -20,7 +20,7 @@ export class PostMapper{
 }
 export class PostService{
 
-    static async createPost(postParams: CreateNewPostType): Promise<PostOutputType | null>{
+     async createPost(postParams: CreateNewPostType): Promise<PostOutputType | null>{
         const targetBlog = await QueryBlogRepository.getById(postParams.blogId)
         if (!targetBlog){
             return null
@@ -39,8 +39,8 @@ export class PostService{
 
     }
 
-    static async  updatePost(postId: string,  updateData:UpdatePostType): Promise<boolean | null>{
-        const post = await QueryPostRepository.getById(postId)
+     async  updatePost(postId: string,  updateData:UpdatePostType): Promise<boolean | null>{
+        const post = await queryPostRepo.getById(postId)
         if(!post){
             return null
         }
@@ -49,7 +49,7 @@ export class PostService{
         return Boolean(updatedCount);
 
     }
-    static async deletePost(id: string): Promise<boolean>{
+     async deletePost(id: string): Promise<boolean>{
         try{
             const result = await PostModel.deleteOne({_id: new ObjectId(id)})
             return result.deletedCount === 1;
@@ -60,3 +60,5 @@ export class PostService{
     }
 
 }
+
+export const postService = new PostService()

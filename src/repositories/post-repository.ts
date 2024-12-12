@@ -2,7 +2,7 @@ import {CreateNewPostType, UpdatePostType} from "../types/posts/input";
 import {PostMongoDbType, PostOutputType} from "../types/posts/output";
 import {ObjectId, WithId} from "mongodb";
 import {PostModel} from "../db/posts-model";
-import {PostService} from "../domain/posts-service";
+import {postService} from "../domain/posts-service";
 
 export class PostMapper{
     static toDto(post:PostMongoDbType):PostOutputType{
@@ -20,21 +20,23 @@ export class PostMapper{
 
 export class PostRepository{
 
-    static async createPost(postParams: CreateNewPostType): Promise<PostOutputType | null>{
-        return await PostService.createPost(postParams)
+     async createPost(postParams: CreateNewPostType): Promise<PostOutputType | null>{
+        return await postService.createPost(postParams)
     }
 
-    static async  updatePost(postId: string,  updateData:UpdatePostType): Promise<boolean | null>{
-        return  await PostService.updatePost(postId, updateData)
+     async  updatePost(postId: string,  updateData:UpdatePostType): Promise<boolean | null>{
+        return  await postService.updatePost(postId, updateData)
     }
 
-    static async deletePost(id: string): Promise<boolean>{
-        return await PostService.deletePost(id)
+     async deletePost(id: string): Promise<boolean>{
+        return await postService.deletePost(id)
     }
 
-    static async findPostById(postId:string):Promise<WithId<PostMongoDbType>|null>{
+     async findPostById(postId:string):Promise<WithId<PostMongoDbType>|null>{
         return PostModel.findOne({_id: new ObjectId(postId)})
     }
 }
+
+export const postRepo = new PostRepository()
 
 
