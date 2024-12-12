@@ -5,12 +5,10 @@ import {BlogDb} from "../db/blogs-model";
 
 export class BlogsService {
 
-
     //переносим часть функционала  с blog route ( создание блога)
     static async createBlog(data: CreateNewBlogType) {
         const newBlogData = new BlogDb(data)
         const newBlogId: string = await BlogRepository.createBlog(newBlogData)
-        //TODO возвращшаем блог айди
         const  createdBlog = await QueryBlogRepository.getById(newBlogId)
         return createdBlog!
     }
@@ -18,7 +16,6 @@ export class BlogsService {
     static async deleteBlog(id: string): Promise<boolean> {
         return await BlogRepository.deleteBlog(id)
     }
-
 }
 
 
