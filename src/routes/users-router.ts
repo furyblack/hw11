@@ -42,3 +42,4 @@ usersRouter.get('/', userController.getUsers)
 usersRouter.post('/', authMiddleware, userValidation(), userController.createUser)
 
 usersRouter.delete('/:id', authMiddleware, userController.deleteUser)
+
