@@ -5,11 +5,9 @@ import {UserModel} from "../db/user-model";
 export class UsersRepository{
 
      async createUser(user: UserAccountDBType): Promise<string> {
-
         const newUserToDb = new UserModel(user)
         await newUserToDb.save()
         return newUserToDb._id.toString()
-
     }
 
      async findByLoginOrEmail(loginOrEmail: string): Promise<WithId<UserAccountDBType> | null> {
