@@ -8,7 +8,6 @@ export const inputValidationMiddleware = (req: Request, res: Response, next: Nex
                 return {
                     message: error.msg,
                     field: error.path,
-
                 };
             default:
                 return {
@@ -16,7 +15,6 @@ export const inputValidationMiddleware = (req: Request, res: Response, next: Nex
                     field: '-----'
                 }
         }
-
     });
 
     if (!errors.isEmpty()) {
