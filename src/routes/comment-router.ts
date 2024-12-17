@@ -3,11 +3,11 @@ import {queryCommentRepo} from "../repositories/query-comment-repository";
 import {authMiddlewareBearer} from "../middlewares/auth/auth-middleware";
 import {commentForPostValidation} from "../validators/post-validators";
 import {UpdateCommentType} from "../types/comment/input-comment-type";
-import {commentRepo} from "../repositories/comment-repository";
-import {commentService} from "../domain/comment-service";
+import {CommentService} from "../domain/comment-service";
 import {extractUserIdFromToken} from "../middlewares/comments/comments-middleware";
 import {LikeModel} from "../db/likes-model";
 import {CommentModel} from "../db/comment-model";
+import {CommentRepository} from "../repositories/comment-repository";
 
 export const commentRouter= Router({})
 
@@ -15,6 +15,13 @@ export const commentRouter= Router({})
 
 
 class CommentController{
+    private commentService: CommentService;
+    private commentRepo: CommentRepository;
+
+    constructor() {
+        this.commentService = new CommentService()
+        this.commentRepo = new CommentRepository()
+    }
     async getComment(req: Request, res: Response){
         {
             const commentId = req.params.id;
@@ -60,11 +67,11 @@ class CommentController{
 
             const userId = req.userDto._id
 
-            const foundComment = await commentRepo.findById(commentId)
+            const foundComment = await this.commentRepo.findById(commentId)
             if( foundComment && foundComment?.commentatorInfo.userId.toString() !== userId.toString()){
                 return res.sendStatus(403)
             }
-            await commentRepo.updateComment(commentId, commentUpdateParams)
+            await this.commentRepo.updateComment(commentId, commentUpdateParams)
             if(!foundComment) return res.sendStatus(404)
             return res.sendStatus(204)
         }
@@ -75,12 +82,12 @@ class CommentController{
 
             const userId = req.userDto._id
 
-            const foundComment = await commentRepo.findById(commentId)
+            const foundComment = await this.commentRepo.findById(commentId)
             if (foundComment && foundComment?.commentatorInfo.userId.toString() !== userId.toString()) {
                 return res.sendStatus(403)
             }
 
-            await commentRepo.deleteComment(commentId)
+            await this.commentRepo.deleteComment(commentId)
             if (!foundComment) return res.sendStatus(404)
             return res.sendStatus(204)
         }
@@ -101,7 +108,7 @@ class CommentController{
                     return res.status(404).send({errorMessages:[{message:'Comment not found', field:'commentId'}]})
                 }
 
-                await commentService.updateLikeStatus(id, userId, likeStatus)
+                await this.commentService.updateLikeStatus(id, userId, likeStatus)
                 return res.sendStatus(204)
             }catch (error){
                 console.error('Error updating like status:', error);
@@ -112,12 +119,12 @@ class CommentController{
 }
 const commentController = new CommentController()
 
-commentRouter.get('/:id', extractUserIdFromToken, commentController.getComment);
+commentRouter.get('/:id', extractUserIdFromToken, commentController.getComment.bind(commentController));
 
-commentRouter.put('/:id', authMiddlewareBearer, commentForPostValidation(), commentController.updateComment)
+commentRouter.put('/:id', authMiddlewareBearer, commentForPostValidation(), commentController.updateComment.bind(commentController))
 
-commentRouter.delete('/:id',authMiddlewareBearer, commentController.deleteComment)
+commentRouter.delete('/:id',authMiddlewareBearer, commentController.deleteComment.bind(commentController))
 
-commentRouter.put('/:id/like-status', authMiddlewareBearer, commentController.updateLikeStatus)
+commentRouter.put('/:id/like-status', authMiddlewareBearer, commentController.updateLikeStatus.bind(commentController))
 
 

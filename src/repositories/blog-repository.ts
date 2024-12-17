@@ -43,4 +43,4 @@ export class BlogRepository {
     }
 }
 
-export const blogRepo = new BlogRepository()
+

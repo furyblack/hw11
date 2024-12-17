@@ -1,7 +1,7 @@
-import {commentRepo} from "../repositories/comment-repository";
-import {postRepo} from "../repositories/post-repository";
+import {CommentRepository} from "../repositories/comment-repository";
 import {LikeModel, LikeStatusEnum} from "../db/likes-model";
 import {CommentDb, CommentModel} from "../db/comment-model";
+import {PostRepository} from "../repositories/post-repository";
 
 export type CreateCommentServiceType ={
     postId:string,
@@ -10,10 +10,19 @@ export type CreateCommentServiceType ={
     userLogin:string,
 }
 export class CommentService{
+
+    commentRepo: CommentRepository
+    private postRepo: PostRepository;
+    constructor() {
+        this.commentRepo = new CommentRepository()
+        this.postRepo = new PostRepository()
+
+    }
+
      async createComment(data: CreateCommentServiceType):Promise<{commentId:string}|null>{
         const {postId,content,userLogin,userId} = data
 
-        const post= await postRepo.findPostById(postId)
+        const post= await this.postRepo.findPostById(postId)
         if(!post) return null
 
         const newCommentForDB = new CommentDb({
@@ -23,7 +32,7 @@ export class CommentService{
             userId: userId
         })
 
-        return await commentRepo.createComment(newCommentForDB)
+        return await this.commentRepo.createComment(newCommentForDB)
     }
 
      async updateLikeStatus(commentId: string, userId: string, likeStatus: LikeStatusEnum): Promise<void> {
@@ -55,5 +64,3 @@ const updateCommentLikeCounts = async (commentId:string)=>{
         'likesInfo.dislikesCount':dislikesCount,
     })
 }
-
-export const commentService = new CommentService()

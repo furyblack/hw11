@@ -1,8 +1,8 @@
-import {CreateNewPostType, UpdatePostType} from "../types/posts/input";
+import {UpdatePostType} from "../types/posts/input";
 import {PostMongoDbType, PostOutputType} from "../types/posts/output";
 import {ObjectId, WithId} from "mongodb";
-import {PostModel} from "../db/posts-model";
-import {postService} from "../domain/posts-service";
+import {PostDb, PostModel} from "../db/posts-model";
+
 
 export class PostMapper{
     static toDto(post:PostMongoDbType):PostOutputType{
@@ -20,16 +20,21 @@ export class PostMapper{
 
 export class PostRepository{
 
-     async createPost(postParams: CreateNewPostType): Promise<PostOutputType | null>{
-        return await postService.createPost(postParams)
+     async createPost(newPost: PostDb): Promise<PostOutputType | null>{
+         const newPostToDb = new PostModel(newPost)
+         await newPostToDb.save()
+         return PostMapper.toDto({...newPost, _id:newPostToDb._id})
     }
 
      async  updatePost(postId: string,  updateData:UpdatePostType): Promise<boolean | null>{
-        return  await postService.updatePost(postId, updateData)
+         const updateResult = await PostModel.updateOne({_id: new ObjectId(postId)}, {$set:{...updateData}})
+         const updatedCount = updateResult.modifiedCount
+         return Boolean(updatedCount);
     }
 
-     async deletePost(id: string): Promise<boolean>{
-        return await postService.deletePost(id)
+    async deletePost(id: string): Promise<boolean> {
+        const result = await PostModel.deleteOne({ _id: new ObjectId(id) });
+        return result.deletedCount === 1; // Возвращаем true, если удалена одна запись
     }
 
      async findPostById(postId:string):Promise<WithId<PostMongoDbType>|null>{
@@ -37,6 +42,6 @@ export class PostRepository{
     }
 }
 
-export const postRepo = new PostRepository()
+
 
 

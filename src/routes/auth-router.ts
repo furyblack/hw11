@@ -1,5 +1,4 @@
 import { Response, Request, Router } from "express";
-import {userService} from "../domain/users-service";
 import { RequestWithBody } from "../types/common";
 import { LoginUserType, UserAccountDBType } from "../types/users/inputUsersType";
 import { jwtService } from "../application/jwt-service";
@@ -14,9 +13,11 @@ import { loginzationValidation } from "../validators/user-validators";
 import {SessionService} from "../domain/session-service";
 import {inputValidationMiddleware} from "../middlewares/inputValidation/input-validation-middleware";
 import {authService} from "../domain/auth-service";
+import {UsersService} from "../domain/users-service";
 
 
 export const authRouter = Router({});
+const userService = new UsersService()
 
 // Endpoint для входа пользователя
 authRouter.post('/login', loginzationValidation(), rateLimiterMiddlewave, async (req: RequestWithBody<LoginUserType>, res: Response) => {

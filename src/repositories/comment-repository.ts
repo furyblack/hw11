@@ -56,5 +56,5 @@ export class CommentRepository {
     }
 }
 
-export const commentRepo = new CommentRepository()
+
 

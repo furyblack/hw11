@@ -1,9 +1,10 @@
 import {CreateNewPostType, UpdatePostType} from "../types/posts/input";
 import {PostMongoDbType, PostOutputType} from "../types/posts/output";
 import {queryBlogRepo} from "../repositories/query-blog-repository";
-import {PostDb, PostModel} from "../db/posts-model";
+import {PostDb} from "../db/posts-model";
 import {ObjectId} from "mongodb";
 import {queryPostRepo} from "../repositories/query-post-repository";
+import {PostRepository} from "../repositories/post-repository";
 
 export class PostMapper{
     static toDto(post:PostMongoDbType):PostOutputType{
@@ -19,6 +20,10 @@ export class PostMapper{
     }
 }
 export class PostService{
+    postRepo:PostRepository
+    constructor() {
+        this.postRepo = new PostRepository()
+    }
 
      async createPost(postParams: CreateNewPostType): Promise<PostOutputType | null>{
         const targetBlog = await queryBlogRepo.getById(postParams.blogId)
@@ -33,9 +38,8 @@ export class PostService{
             blogId: postParams.blogId,
             blogName: targetBlog.name,
         })
-        const newPostToDb = new PostModel(newPost)
-        await newPostToDb.save()
-        return PostMapper.toDto({...newPost, _id:newPostToDb._id})
+
+         return this.postRepo.createPost(newPost)
 
     }
 
@@ -44,21 +48,20 @@ export class PostService{
         if(!post){
             return null
         }
-        const updateResult = await PostModel.updateOne({_id: new ObjectId(postId)}, {$set:{...updateData}})
-        const updatedCount = updateResult.modifiedCount
-        return Boolean(updatedCount);
+
+        return this.postRepo.updatePost(postId,updateData)
 
     }
-     async deletePost(id: string): Promise<boolean>{
-        try{
-            const result = await PostModel.deleteOne({_id: new ObjectId(id)})
-            return result.deletedCount === 1;
-        }catch (error){
-            console.error("Error deleting post", error)
-            return false
+    async deletePost(id: string): Promise<boolean> {
+        try {
+            const result = await this.postRepo.deletePost(id);
+            return result; // Возвращаем результат из репозитория
+        } catch (error) {
+            console.error("Error deleting post", error);
+            return false; // Возвращаем false в случае ошибки
         }
     }
 
 }
 
-export const postService = new PostService()
+

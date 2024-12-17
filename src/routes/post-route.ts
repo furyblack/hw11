@@ -3,22 +3,31 @@ import {RequestWithBody, RequestWithParamsAndBody, RequestWithQuery, RequestWith
 import {Request, Response, Router} from "express";
 import {PostOutputType} from "../types/posts/output";
 import {CreateNewPostType, postQuerySortData, UpdatePostType} from "../types/posts/input";
-import {postRepo} from "../repositories/post-repository";
 import {commentForPostValidation, postValidation} from "../validators/post-validators";
 import {queryPostRepo} from "../repositories/query-post-repository";
 import {paginator} from "../types/paginator/pagination";
 import {PaginationOutputType} from "../types/blogs/output";
 import {CommentOutputType} from "../types/comment/output-comment-type";
 import {CreateNewCommentType} from "../types/comment/input-comment-type";
-import {commentService} from "../domain/comment-service";
 import {queryCommentRepo} from "../repositories/query-comment-repository";
 import {ObjectId} from "mongodb";
 import {extractUserIdFromToken} from "../middlewares/comments/comments-middleware";
-import {postService} from "../domain/posts-service";
+import {PostService} from "../domain/posts-service";
+import {PostRepository} from "../repositories/post-repository";
+import {CommentService} from "../domain/comment-service";
 
 export const postRoute = Router({})
 
 class PostController {
+    postService:PostService
+    private postRepo: PostRepository;
+    private commentService: CommentService;
+    constructor() {
+        this.postService = new PostService()
+        this.postRepo = new PostRepository()
+        this.commentService = new CommentService()
+    }
+
     async getPosts(req: RequestWithQuery<postQuerySortData>, res: Response<PaginationOutputType<PostOutputType[]>>) {
         const paginationData = paginator(req.query)
         const posts = await queryPostRepo.getAll(paginationData)
@@ -44,7 +53,7 @@ class PostController {
             res.sendStatus(404)
             return
         }
-        const foundPost = await postRepo.findPostById(postId)
+        const foundPost = await this.postRepo.findPostById(postId)
         if (!foundPost) {
             res.sendStatus(404)
             /**
@@ -68,7 +77,7 @@ class PostController {
 
     async createPost(req: RequestWithBody<CreateNewPostType>, res: Response<PostOutputType>) {
         const {title, shortDescription, content, blogId}: CreateNewPostType = req.body
-        const addResult = await postService.createPost({title, shortDescription, content, blogId})
+        const addResult = await this.postService.createPost({title, shortDescription, content, blogId})
         if (!addResult) {
             res.sendStatus(404)
             return
@@ -84,7 +93,7 @@ class PostController {
         const content = req.body.content;
         const userId = req.userDto._id.toString();
         const userLogin = req.userDto.accountData.userName;
-        const createResult = await commentService.createComment({content, postId, userId, userLogin})
+        const createResult = await this.commentService.createComment({content, postId, userId, userLogin})
         //если поста нет то 404
         if (!createResult) return res.sendStatus(404)
 
@@ -101,7 +110,7 @@ class PostController {
         }
         const postId = req.params.id
 
-        const isUpdated = await postService.updatePost(postId, postUpdateParams)
+        const isUpdated = await this.postService.updatePost(postId, postUpdateParams)
         if (isUpdated) {
             return res.sendStatus(204)
         } else {
@@ -111,7 +120,7 @@ class PostController {
     }
 
     async deletePost(req: Request, res: Response) {
-        const isDeleted = await postService.deletePost(req.params.id)
+        const isDeleted = await this.postService.deletePost(req.params.id)
         if (!isDeleted) {
             res.sendStatus(404)
         } else {
@@ -128,13 +137,13 @@ postRoute.get('/:id', postController.getPostById)
 
 postRoute.get('/:postId/comments', extractUserIdFromToken, postController.getCommentsForPost)
 
-postRoute.post('/', authMiddleware, postValidation(), postController.createPost)
+postRoute.post('/', authMiddleware, postValidation(), postController.createPost.bind(postController))
 
-postRoute.post("/:postId/comments", authMiddlewareBearer, commentForPostValidation(), postController.createCommentForPost)
+postRoute.post("/:postId/comments", authMiddlewareBearer, commentForPostValidation(), postController.createCommentForPost.bind(postController))
 
-postRoute.put('/:id', authMiddleware, postValidation(), postController.updatePost)
+postRoute.put('/:id', authMiddleware, postValidation(), postController.updatePost.bind(postController))
 
-postRoute.delete('/:id', authMiddleware, postController.deletePost)
+postRoute.delete('/:id', authMiddleware, postController.deletePost.bind(postController))
 
 
 

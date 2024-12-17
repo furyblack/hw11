@@ -1,12 +1,14 @@
 import { NextFunction, Response, Request } from 'express';
 import { jwtService } from "../../application/jwt-service";
-import {userRepo} from "../../repositories/users-repository";
 import { body } from "express-validator";
 import { inputValidationMiddleware } from "../inputValidation/input-validation-middleware";
 import {SessionService} from "../../domain/session-service";
 import {UserModel} from "../../db/user-model";
 import {RequestCountModel} from "../../db/requestcount-model";
+import {UsersRepository} from "../../repositories/users-repository";
 
+
+const userRepo = new UsersRepository()
 
 // Middleware для базовой аутентификации
 export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {

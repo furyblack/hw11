@@ -1,6 +1,8 @@
 import {NextFunction, Request, Response} from "express";
 import {jwtService} from "../../application/jwt-service";
-import {userRepo} from "../../repositories/users-repository";
+import {UsersRepository} from "../../repositories/users-repository";
+
+const userRepo = new UsersRepository()
 
 
 export const extractUserIdFromToken = async  (req: Request, res: Response, next: NextFunction) => {

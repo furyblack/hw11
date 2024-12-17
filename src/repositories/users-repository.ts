@@ -83,4 +83,3 @@ export class UsersRepository{
         });
     }
 }
-export const userRepo = new UsersRepository()
