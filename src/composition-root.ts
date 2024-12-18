@@ -1,15 +1,15 @@
 import {UsersRepository} from "./repositories/users-repository";
 import {UsersService} from "./domain/users-service";
-import {UserController} from "./routes/users-router";
 import {CommentRepository} from "./repositories/comment-repository";
 import {CommentService} from "./domain/comment-service";
-import {CommentController} from "./routes/comment-router";
 import {PostRepository} from "./repositories/post-repository";
 import {PostService} from "./domain/posts-service";
-import {PostController} from "./routes/post-route";
 import {BlogRepository} from "./repositories/blog-repository";
 import {BlogsService} from "./domain/blogs-service";
-import {BlogController} from "./routes/blog-route";
+import {UserController} from "./controllers/user-controller";
+import {CommentController} from "./controllers/comment-controller";
+import {BlogController} from "./controllers/blog-controller";
+import {PostController} from "./controllers/post-controller";
 
 
 //REPO
