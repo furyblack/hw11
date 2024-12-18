@@ -9,10 +9,7 @@ import {add} from 'date-fns';
 
 
 export class UsersService {
-    userRepo:UsersRepository
-    constructor() {
-        this.userRepo = new UsersRepository()
-    }
+    constructor(protected userRepo: UsersRepository) {}
     async createUser(login: string, email: string, password: string): Promise<string> {
 
         const newUser = await UserFactory

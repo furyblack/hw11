@@ -20,9 +20,7 @@ export class PostMapper{
     }
 }
 export class PostService{
-    postRepo:PostRepository
-    constructor() {
-        this.postRepo = new PostRepository()
+    constructor(protected postRepo:PostRepository) {
     }
 
      async createPost(postParams: CreateNewPostType): Promise<PostOutputType | null>{

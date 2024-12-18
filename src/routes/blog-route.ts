@@ -6,26 +6,23 @@ import {blogQuerySortData, CreateNewBlogType, UpdateBlogType} from "../types/blo
 import {BlogOutputType, PaginationOutputType} from "../types/blogs/output";
 import {ObjectId} from "mongodb";
 import {PostOutputType} from "../types/posts/output";
-import {blogService, BlogsService} from "../domain/blogs-service";
+import {BlogsService} from "../domain/blogs-service";
 import {queryBlogRepo} from "../repositories/query-blog-repository";
 import {paginator} from "../types/paginator/pagination";
 import {postForBlogValidation} from "../validators/post-validators";
 import {CreateNewPostForBlogType} from "../types/posts/input";
 import {BlogRepository} from "../repositories/blog-repository";
 import {PostService} from "../domain/posts-service";
+import {blogController, blogService} from "../composition-root";
 
 
 export const blogRoute = Router({});
 
-class BlogController {
-    blogService:BlogsService
-    private blogRepo: BlogRepository;
-    private postService: PostService;
-    constructor() {
-        this.blogService = new BlogsService()
-        this.blogRepo = new BlogRepository()
-        this.postService = new PostService()
-    }
+export class BlogController {
+    constructor(protected blogService: BlogsService,
+                protected blogRepo: BlogRepository,
+                protected postService: PostService) {}
+
 
     async getBlogs(req: RequestWithQuery<blogQuerySortData>, res: Response<PaginationOutputType<BlogOutputType[]>>) {
         const paginationData = paginator(req.query)
@@ -128,7 +125,6 @@ class BlogController {
     }
 }
 
-export const blogController = new BlogController()
 
 blogRoute.get('/', blogController.getBlogs)
 

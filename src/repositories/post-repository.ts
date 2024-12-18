@@ -19,7 +19,6 @@ export class PostMapper{
 }
 
 export class PostRepository{
-
      async createPost(newPost: PostDb): Promise<PostOutputType | null>{
          const newPostToDb = new PostModel(newPost)
          await newPostToDb.save()

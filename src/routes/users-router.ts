@@ -8,14 +8,12 @@ import {userPaginator} from "../types/paginator/pagination";
 import {queryUserRepo} from "../repositories/query-user-repository";
 import {authMiddleware} from "../middlewares/auth/auth-middleware";
 import {userValidation} from "../validators/user-validators";
+import {userController} from "../composition-root";
 
 export const usersRouter = Router({})
 
-class UserController {
-    userService:UsersService
-    constructor() {
-        this.userService = new UsersService()
-    }
+export class UserController {
+    constructor(protected userService:UsersService) {}
     async getUsers(req: RequestWithQuery<userQuerySortData>, res: Response<PaginationOutputType<UserOutputType[]>>) {
         const paginationData = userPaginator(req.query)
 
@@ -39,9 +37,9 @@ class UserController {
     }
 }
 
-const userController = new UserController()
 
-usersRouter.get('/', userController.getUsers)
+
+usersRouter.get('/', userController.getUsers.bind(userController))
 
 usersRouter.post('/', authMiddleware, userValidation(), userController.createUser.bind(userController))
 

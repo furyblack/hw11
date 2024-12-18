@@ -13,11 +13,11 @@ import { loginzationValidation } from "../validators/user-validators";
 import {SessionService} from "../domain/session-service";
 import {inputValidationMiddleware} from "../middlewares/inputValidation/input-validation-middleware";
 import {authService} from "../domain/auth-service";
-import {UsersService} from "../domain/users-service";
+import {userService} from "../composition-root";
 
 
 export const authRouter = Router({});
-const userService = new UsersService()
+
 
 // Endpoint для входа пользователя
 authRouter.post('/login', loginzationValidation(), rateLimiterMiddlewave, async (req: RequestWithBody<LoginUserType>, res: Response) => {

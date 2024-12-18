@@ -15,17 +15,14 @@ import {extractUserIdFromToken} from "../middlewares/comments/comments-middlewar
 import {PostService} from "../domain/posts-service";
 import {PostRepository} from "../repositories/post-repository";
 import {CommentService} from "../domain/comment-service";
+import {postController} from "../composition-root";
 
 export const postRoute = Router({})
 
-class PostController {
-    postService:PostService
-    private postRepo: PostRepository;
-    private commentService: CommentService;
-    constructor() {
-        this.postService = new PostService()
-        this.postRepo = new PostRepository()
-        this.commentService = new CommentService()
+export class PostController {
+
+    constructor(protected postService:PostService, protected postRepo:PostRepository, protected commentService:CommentService) {
+
     }
 
     async getPosts(req: RequestWithQuery<postQuerySortData>, res: Response<PaginationOutputType<PostOutputType[]>>) {
@@ -129,13 +126,13 @@ class PostController {
     }
 }
 
-const postController = new PostController()
 
-postRoute.get('/', postController.getPosts)
 
-postRoute.get('/:id', postController.getPostById)
+postRoute.get('/', postController.getPosts.bind(postController))
 
-postRoute.get('/:postId/comments', extractUserIdFromToken, postController.getCommentsForPost)
+postRoute.get('/:id', postController.getPostById.bind(postController))
+
+postRoute.get('/:postId/comments', extractUserIdFromToken, postController.getCommentsForPost.bind(postController))
 
 postRoute.post('/', authMiddleware, postValidation(), postController.createPost.bind(postController))
 

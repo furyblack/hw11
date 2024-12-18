@@ -10,13 +10,7 @@ export type CreateCommentServiceType ={
     userLogin:string,
 }
 export class CommentService{
-
-    commentRepo: CommentRepository
-    private postRepo: PostRepository;
-    constructor() {
-        this.commentRepo = new CommentRepository()
-        this.postRepo = new PostRepository()
-
+    constructor(protected commentRepo:CommentRepository, protected postRepo:PostRepository) {
     }
 
      async createComment(data: CreateCommentServiceType):Promise<{commentId:string}|null>{

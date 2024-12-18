@@ -8,19 +8,19 @@ import {extractUserIdFromToken} from "../middlewares/comments/comments-middlewar
 import {LikeModel} from "../db/likes-model";
 import {CommentModel} from "../db/comment-model";
 import {CommentRepository} from "../repositories/comment-repository";
+import {commentController} from "../composition-root";
+
 
 export const commentRouter= Router({})
 
 //миддл вар для получения комента всем пользователям( и даже не авторизованным)
 
 
-class CommentController{
-    private commentService: CommentService;
-    private commentRepo: CommentRepository;
+export class CommentController{
 
-    constructor() {
-        this.commentService = new CommentService()
-        this.commentRepo = new CommentRepository()
+
+    constructor(protected commentService:CommentService, protected commentRepo:CommentRepository) {
+
     }
     async getComment(req: Request, res: Response){
         {
@@ -117,7 +117,7 @@ class CommentController{
         }
     }
 }
-const commentController = new CommentController()
+
 
 commentRouter.get('/:id', extractUserIdFromToken, commentController.getComment.bind(commentController));
 

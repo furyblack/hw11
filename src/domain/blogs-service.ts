@@ -4,10 +4,7 @@ import {queryBlogRepo} from "../repositories/query-blog-repository";
 import {BlogDb} from "../db/blogs-model";
 
 export class BlogsService {
-
-    blogRepo:BlogRepository
-    constructor() {
-        this.blogRepo = new BlogRepository()
+    constructor(protected blogRepo :BlogRepository) {
     }
 
     //переносим часть функционала  с blog route ( создание блога)
@@ -23,7 +20,7 @@ export class BlogsService {
     }
 }
 
-export const blogService = new BlogsService()
+
 
 
 
