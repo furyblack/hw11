@@ -5,8 +5,6 @@ import {userController} from "../composition-root";
 
 export const usersRouter = Router({})
 
-
-
 usersRouter.get('/', userController.getUsers.bind(userController))
 
 usersRouter.post('/', authMiddleware, userValidation(), userController.createUser.bind(userController))

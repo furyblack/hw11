@@ -46,7 +46,6 @@ export class PostService{
         if(!post){
             return null
         }
-
         return this.postRepo.updatePost(postId,updateData)
 
     }
